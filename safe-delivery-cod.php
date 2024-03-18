@@ -66,7 +66,7 @@ class SafeDeliveryCOD {
      * of the plugin.
      */
     private function define_admin_hooks() {
-        $plugin_admin = new SDCOD_SettingsPage();
+        $plugin_admin = new SDCOD_Settings();
         // other admin hooks...
     }
 
