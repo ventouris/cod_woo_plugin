@@ -54,14 +54,8 @@ if ( ! class_exists( 'SDCOD_Settings' ) ) {
 					'class' => 'SDCOD_settings_title'
                 ),
 				//type of calculation
-				 array(
-                    'title' => __( 'SafeDeliveryCOD Settings', 'safedeliverycod' ),
-                    'type'  => 'title',
-                    'desc'  => __( 'Manage settings for SafeDeliveryCOD.', 'safedeliverycod' ),
-                    'id'    => 'safedeliverycod_settings',
-					'class' => 'SDCOD_settings_secondary_title'
-                ),
-				array(
+		
+		array(
                     'title'    => __( 'Type of Calculation', 'safedeliverycod' ),
                     'desc'     => __( 'Select if you want o choose the distinct number of canceled orders or a percentage', 'safedeliverycod' ),
                     'id'       => 'safedeliverycod_risk_calc_type',
