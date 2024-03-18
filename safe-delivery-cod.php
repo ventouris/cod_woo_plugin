@@ -99,3 +99,9 @@ $safe_delivery_cod = new SafeDeliveryCOD();
 // Activation and deactivation hooks.
 register_activation_hook( __FILE__, array( 'SafeDeliveryCOD', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'SafeDeliveryCOD', 'deactivate' ) );
+
+// load admin CSS
+function enqueue_SDCOD_admin_style() {
+   	wp_enqueue_style( 'SDCOD_admin_style', SDCOD_PLUGIN_URL . 'assets/css/SDCOD_admin.css');
+}
+add_action( 'admin_enqueue_scripts', 'enqueue_SDCOD_admin_style' );
