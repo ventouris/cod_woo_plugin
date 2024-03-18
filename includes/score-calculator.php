@@ -1,4 +1,3 @@
-
 <?php
 class SDCOD_ScoreCalculator {
 // [--] Task: Calculate and manage the delivery risk score based on customer history.
