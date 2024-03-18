@@ -1,4 +1,3 @@
-
 <?php
 // [--] Task: Plugin initialization tasks like registering custom order statuses.
 // Function: SDCOD_register_custom_order_status() - Creates a new order status for flagged COD orders.
