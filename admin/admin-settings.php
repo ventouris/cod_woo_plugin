@@ -77,5 +77,4 @@ if ( ! class_exists( 'SDCOD_Settings' ) ) {
         }
     }
 
-    new SDCOD_Settings();
 }
