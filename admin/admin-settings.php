@@ -50,8 +50,32 @@ if ( ! class_exists( 'SDCOD_Settings' ) ) {
                     'title' => __( 'SafeDeliveryCOD Settings', 'safedeliverycod' ),
                     'type'  => 'title',
                     'desc'  => __( 'Manage settings for SafeDeliveryCOD.', 'safedeliverycod' ),
-                    'id'    => 'safedeliverycod_settings'
+                    'id'    => 'safedeliverycod_settings',
+					'class' => 'SDCOD_settings_title'
                 ),
+				//type of calculation
+				 array(
+                    'title' => __( 'SafeDeliveryCOD Settings', 'safedeliverycod' ),
+                    'type'  => 'title',
+                    'desc'  => __( 'Manage settings for SafeDeliveryCOD.', 'safedeliverycod' ),
+                    'id'    => 'safedeliverycod_settings',
+					'class' => 'SDCOD_settings_secondary_title'
+                ),
+				array(
+                    'title'    => __( 'Type of Calculation', 'safedeliverycod' ),
+                    'desc'     => __( 'Select if you want o choose the distinct number of canceled orders or a percentage', 'safedeliverycod' ),
+                    'id'       => 'safedeliverycod_risk_calc_type',
+                    'type'    => 'radio',
+    				'options' => array(
+        				'number' => __('Number', 'safedeliverycod'),
+        				'percentage' => __('Percentage', 'safedeliverycod'),
+        				'advanced' => __('Advanced', 'safedeliverycod')
+    				),
+    				'default' => 'number',
+					'class' => 'SDCOD_settings_typeofcalc'
+                ),
+				
+				
                 array(
                     'title'    => __( 'Risk Threshold', 'safedeliverycod' ),
                     'desc'     => __( 'The number of failed deliveries after which COD is disabled.', 'safedeliverycod' ),
@@ -76,5 +100,6 @@ if ( ! class_exists( 'SDCOD_Settings' ) ) {
             return apply_filters( 'safedeliverycod_settings', $settings );
         }
     }
+
 
 }
