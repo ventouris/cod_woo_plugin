@@ -67,6 +67,8 @@ class SafeDeliveryCOD {
      */
     private function define_admin_hooks() {
         $plugin_admin = new SDCOD_Settings();
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_styles' ) );
+
         // other admin hooks...
     }
 
@@ -75,6 +77,8 @@ class SafeDeliveryCOD {
      * of the plugin.
      */
     private function define_public_hooks() {
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_public_styles' ) );
+
         // public hooks...
     }
 
@@ -91,6 +95,14 @@ class SafeDeliveryCOD {
     public static function deactivate() {
         // Deactivation code here...
     }
+	
+	public function enqueue_admin_styles() {
+		wp_enqueue_style( 'SafeDeliveryCOD_admin_style', SDCOD_PLUGIN_URL . 'assets/css/SDCOD_admin.css', array(), SDCOD_VERSION, 'all' );
+	}
+	
+	public function enqueue_public_styles() {
+		wp_enqueue_style( 'SafeDeliveryCOD_public_style', SDCOD_PLUGIN_URL . 'assets/css/SDCOD_public.css', array(), SDCOD_VERSION, 'all' );
+	}
 }
 
 // Instantiate the plugin class.
@@ -99,9 +111,3 @@ $safe_delivery_cod = new SafeDeliveryCOD();
 // Activation and deactivation hooks.
 register_activation_hook( __FILE__, array( 'SafeDeliveryCOD', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'SafeDeliveryCOD', 'deactivate' ) );
-
-// load admin CSS
-function enqueue_SDCOD_admin_style() {
-   	wp_enqueue_style( 'SDCOD_admin_style', SDCOD_PLUGIN_URL . 'assets/css/SDCOD_admin.css');
-}
-add_action( 'admin_enqueue_scripts', 'enqueue_SDCOD_admin_style' );
