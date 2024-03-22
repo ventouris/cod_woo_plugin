@@ -81,6 +81,9 @@ class SafeDeliveryCOD {
 		//add settings link to plugins list page
 		add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array($this, 'SDCOD_settings_link' ));
 
+		//deactivate this plugin if woocommerce is deactivated
+		add_action( 'plugins_loaded', array($this, 'SDCOD_check_deactivated_plugin'), 10, 2 );
+
         // other admin hooks...
     }
 
@@ -129,6 +132,23 @@ class SafeDeliveryCOD {
 		$links[] = $settings_link;
 		return $links;
 	}
+	
+	public function SDCOD_check_deactivated_plugin( ) {
+		
+		// Check if the deactivated plugin is WooCommerce
+		if( !class_exists( 'WooCommerce' ) ) {
+			add_action( 'admin_init', array($this, 'SDCOD_force_deactivate') );
+            add_action( 'admin_notices', array($this, 'SDCOD_plugin_deactivation_notice') );
+		}
+	}
+	
+	public function SDCOD_force_deactivate() {
+		deactivate_plugins( plugin_basename( __FILE__ ) );
+	}
+	
+	public function SDCOD_plugin_deactivation_notice() {
+		echo '<div class="error"><p>Safe Delivery COD plugin has been deactivated because WooCommerce is not active. Please activate WooCommerce to use this plugin.</p>	</div>';
+	}
 }
 
 // Instantiate the plugin class.
@@ -137,7 +157,3 @@ $safe_delivery_cod = new SafeDeliveryCOD();
 // Activation and deactivation hooks.
 register_activation_hook( __FILE__, array( 'SafeDeliveryCOD', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'SafeDeliveryCOD', 'deactivate' ) );
-
-
-
-		
