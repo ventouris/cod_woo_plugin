@@ -36,8 +36,8 @@ class SafeDeliveryCOD {
      */
     private function define_constants() {
         define( 'SDCOD_VERSION', '1.0.0' );
-		define( 'SDCOD_PLUGIN_NAME', 'Safe Delivery COD' );
-		define( 'SDCOD_PLUGIN_SHORT_NAME', 'SDCOD' );
+	define( 'SDCOD_PLUGIN_NAME', 'Safe Delivery COD' );
+	define( 'SDCOD_PLUGIN_SHORT_NAME', 'SDCOD' );
         define( 'SDCOD_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
         define( 'SDCOD_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
     }
