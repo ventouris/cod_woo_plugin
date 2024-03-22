@@ -39,5 +39,48 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
         return $new_order_statuses;
     }
     add_filter( 'wc_order_statuses', 'add_cod_risk_status_to_list' );
+	
+	
+	function register_bulk_action( $bulk_actions ) {
+        $bulk_actions['mark_cod_high_risk'] = __( 'Change status to COD High Risk', 'safedeliverycod' ); 
+        return $bulk_actions;
+    }
+	add_filter( 'bulk_actions-woocommerce_page_wc-orders', 'register_bulk_action'  );
 
+
+    function bulk_process_custom_status( $redirect, $doaction, $object_ids ) {
+        if ( 'mark_cod_high_risk' === $doaction ) {
+            foreach ( $object_ids as $order_id ) {
+                $order = wc_get_order( $order_id );
+                $order->update_status( 'wc-cod-high-risk' );
+            }
+
+            $redirect = add_query_arg(
+                array(
+                    'bulk_cod_high_risk' => 'marked_cod_high_risk',
+                    'changed' => count( $object_ids ),
+                ),
+                $redirect
+            );
+        }
+
+        return $redirect;
+    }
+	add_action('handle_bulk_actions-woocommerce_page_wc-orders', 'bulk_process_custom_status', 20, 3);
+
+    function custom_order_status_notices() {
+        if ( 
+            isset( $_REQUEST['bulk_cod_high_risk'] ) && 
+            'marked_cod_high_risk' === $_REQUEST['bulk_cod_high_risk'] &&
+            isset( $_REQUEST['changed'] ) && 
+            $_REQUEST['changed'] 
+        ) {
+            printf(
+                '<div id="message" class="updated notice is-dismissible"><p>' . 
+                _n( '%s order status changed to COD High Risk.', '%s order statuses changed to COD High Risk.', intval( $_REQUEST['changed'] ), 'safedeliverycod' ) . '</p></div>', 
+                intval( $_REQUEST['changed'] )
+            );
+        }
+    }
+	add_action( 'admin_notices', 'custom_order_status_notices' );
 }
