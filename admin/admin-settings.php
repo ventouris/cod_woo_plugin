@@ -46,6 +46,8 @@ if ( ! class_exists( 'SDCOD_Settings' ) ) {
          */
         private function get_settings() {
             $settings = array(
+				
+				//Intro
                 array(
                     'title' => __( 'SafeDeliveryCOD Settings', 'safedeliverycod' ),
                     'type'  => 'title',
@@ -53,17 +55,60 @@ if ( ! class_exists( 'SDCOD_Settings' ) ) {
                     'id'    => 'safedeliverycod_settings',
 					'class' => 'SDCOD_settings_title'
                 ),
-				//type of calculation
-		
-		array(
+				
+				//order fields
+				array(
+                    'title'    => __( 'Fields', 'safedeliverycod' ),
+                    'desc'     => __( 'Email', 'safedeliverycod' ),
+                    'id'       => 'safedeliverycod_risk_calc_type1',
+                    'type'    => 'checkbox',
+    				'default' => 'yes',
+					'checkboxgroup' => 'start',
+					'disabled' => 'disabled',
+					'class' => 'SDCOD_settings_typeofcalc'
+                ),
+				array(
+                    'desc'     => __( 'Mobile number', 'safedeliverycod' ),
+                    'id'       => 'safedeliverycod_risk_calc_type2',
+                    'type'    => 'checkbox',
+					'checkboxgroup' => '',
+    				'default' => 'no',
+					'class' => 'SDCOD_settings_typeofcalc'
+                ),
+				array(
+                    'desc'     => __( 'Shipping address', 'safedeliverycod' ),
+                    'id'       => 'safedeliverycod_risk_calc_type3',
+                    'type'    => 'checkbox',
+					'checkboxgroup' => '',
+    				'default' => 'no',
+					'class' => 'SDCOD_settings_typeofcalc'
+                ),
+				array(
+                    'desc'     => __( 'Billing address', 'safedeliverycod' ),
+                    'id'       => 'safedeliverycod_risk_calc_type4',
+                    'type'    => 'checkbox',
+					'checkboxgroup' => '',
+    				'default' => 'no',
+					'class' => 'SDCOD_settings_typeofcalc'
+                ),
+				array(
+                    'desc'     => __( 'Full name', 'safedeliverycod' ),
+                    'id'       => 'safedeliverycod_risk_calc_type4',
+                    'type'    => 'checkbox',
+    				'default' => 'no',
+					'checkboxgroup' => 'end',
+					'class' => 'SDCOD_settings_typeofcalc'
+                ),
+				
+				//score calculations
+				array(
                     'title'    => __( 'Type of Calculation', 'safedeliverycod' ),
                     'desc'     => __( 'Select if you want o choose the distinct number of canceled orders or a percentage', 'safedeliverycod' ),
                     'id'       => 'safedeliverycod_risk_calc_type',
                     'type'    => 'radio',
     				'options' => array(
         				'number' => __('Number', 'safedeliverycod'),
-        				'percentage' => __('Percentage', 'safedeliverycod'),
-        				'advanced' => __('Advanced', 'safedeliverycod')
+        				'percentage' => __('Percentage', 'safedeliverycod')
     				),
     				'default' => 'number',
 					'class' => 'SDCOD_settings_typeofcalc'
@@ -78,13 +123,7 @@ if ( ! class_exists( 'SDCOD_Settings' ) ) {
                     'css'      => 'min-width:300px;',
                     'desc_tip' => true,
                 ),
-                array(
-                    'title'    => __( 'Advanced Mode', 'safedeliverycod' ),
-                    'desc'     => __( 'Enable advanced scoring mode for evaluating delivery risk.', 'safedeliverycod' ),
-                    'id'       => 'safedeliverycod_advanced_mode',
-                    'type'     => 'checkbox',
-                    'default'  => 'no', // or yes, based on your preference
-                ),
+
                 array(
                     'type' => 'sectionend',
                     'id'   => 'safedeliverycod_settings'
@@ -97,3 +136,4 @@ if ( ! class_exists( 'SDCOD_Settings' ) ) {
 
 
 }
+				
