@@ -87,6 +87,11 @@ class SafeDeliveryCOD {
      */
     public static function activate() {
         // Activation code here...
+        if ( !class_exists( 'WooCommerce' ) ) {
+			deactivate_plugins(SDCOD_PLUGIN_DIR);
+			wp_die( esc_html__( 'This plugin requires WooCommerce. Download it from WooCommerce official website', 'safedeliverycod' ) . ' https://woocommerce.com' );
+			exit;
+		}
     }
 
     /**
