@@ -1,11 +1,5 @@
 <?php
 if ( ! class_exists( 'SDCOD_Settings' ) ) {
-// [--] Task: Setup and display the plugin settings in the WooCommerce settings area.
-// Class: SDCOD_Settings
-//   - Function: add_settings_tab() - Adds a new tab in WooCommerce settings for this plugin.
-//   - Function: settings_tab() - Defines settings in the newly created tab (risk threshold, advanced mode, language support).
-//   - Function: save_settings() - Processes and saves the settings from the settings form.
-// [--] Add fields for risk threshold settings and advanced mode options.
     class SDCOD_Settings {
 
         public function __construct() {
@@ -133,7 +127,7 @@ if ( ! class_exists( 'SDCOD_Settings' ) ) {
             return apply_filters( 'safedeliverycod_settings', $settings );
         }
     }
-
+	new SDCOD_Settings();
 
 }
 				
