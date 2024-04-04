@@ -1,15 +1,15 @@
 <?php
 /**
- * Plugin Name: Safe Delivery COD
- * Description: A WooCommerce plugin to manage and restrict COD options based on customer delivery history.
+ * Plugin Name: WooCommerce Delivery Refusal & Payment Manager
+ * Description: The WooCommerce Delivery Refusal & Payment Manager is a powerful tool designed to mitigate the impact of delivery refusals by intelligently managing and restricting payment options based on customers' order history.
  * Version: 1.0.0
  * Author: Your Name
  * 
- * This file is part of the Safe Delivery COD plugin, which manages and restricts 
- * Cash On Delivery (COD) options for WooCommerce orders based on customer delivery history.
  */
 
-use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
+use Automattic\WooCommerce\Utilities\OrderUtil;
+
+// use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
 
 // Exit if accessed directly.
 if (!defined('ABSPATH')) {
@@ -17,11 +17,10 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Main plugin class for Safe Delivery COD.
  * Initializes the plugin by setting up localization, loading dependencies,
  * and defining admin and public hooks.
  */
-class SafeDeliveryCOD
+class DeliveryRefusalPaymentManager
 {
     /**
      * Constructor.
@@ -46,11 +45,11 @@ class SafeDeliveryCOD
      */
     private function defineConstants()
     {
-        define( 'SDCOD_VERSION', '1.0.0' );
-		define( 'SDCOD_PLUGIN_NAME', 'Safe Delivery COD' );
-		define( 'SDCOD_PLUGIN_SHORT_NAME', 'SDCOD' );
-        define( 'SDCOD_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-        define( 'SDCOD_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+        define( 'DRPM_VERSION', '1.0.0' );
+		define( 'DRPM_PLUGIN_NAME', 'WooCommerce Delivery Refusal & Payment Manager' );
+		define( 'DRPM_PLUGIN_SHORT_NAME', 'DRPM' );
+        define( 'DRPM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+        define( 'DRPM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
     }
 
     /**
@@ -61,13 +60,13 @@ class SafeDeliveryCOD
      */
     private function loadDependencies()
     {
-        require_once SDCOD_PLUGIN_DIR . 'admin/admin-settings.php';
-        require_once SDCOD_PLUGIN_DIR . 'admin/admin-order-meta.php';
-        require_once SDCOD_PLUGIN_DIR . 'admin/admin-users-meta.php';
-        require_once SDCOD_PLUGIN_DIR . 'includes/init.php';
-        require_once SDCOD_PLUGIN_DIR . 'includes/order-status.php';
-        require_once SDCOD_PLUGIN_DIR . 'includes/score-calculator.php';
-        require_once SDCOD_PLUGIN_DIR . 'includes/hide-cod.php';
+        require_once DRPM_PLUGIN_DIR . 'admin/admin-settings.php';
+        require_once DRPM_PLUGIN_DIR . 'admin/admin-order-meta.php';
+        require_once DRPM_PLUGIN_DIR . 'admin/admin-users-meta.php';
+        require_once DRPM_PLUGIN_DIR . 'includes/init.php';
+        require_once DRPM_PLUGIN_DIR . 'includes/order-status.php';
+        require_once DRPM_PLUGIN_DIR . 'includes/score-calculator.php';
+        require_once DRPM_PLUGIN_DIR . 'includes/hide-payment-gateway.php';
     }
 
     /**
@@ -77,7 +76,7 @@ class SafeDeliveryCOD
      */
     private function setLocale()
     {
-        load_plugin_textdomain('safedeliverycod', false, dirname(plugin_basename(__FILE__)) . '/languages/');
+        load_plugin_textdomain('delivery_refusal_payment_manager', false, dirname(plugin_basename(__FILE__)) . '/languages/');
     }
 
     /**
@@ -92,14 +91,17 @@ class SafeDeliveryCOD
         
         add_action('before_woocommerce_init', function () {
             if (class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class)) {
-                \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', SDCOD_PLUGIN_DIR, true);
+                \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', DRPM_PLUGIN_DIR, true);
             }
         });
         
-        add_filter('plugin_action_links_' . plugin_basename(__FILE__), [$this, 'addSettingsLink']);
+        add_filter('plugin_action_links_' . plugin_basename(__FILE__), array($this, 'addSettingsLink'));
         
-        add_action('plugins_loaded', [$this, 'checkDeactivatedPlugin']);
-    }
+        add_action('plugins_loaded', array($this, 'checkDeactivatedPlugin'));
+		
+		add_action('admin_notices', array($this,'debugingCodeAdminNotices'));
+
+	}
 
     /**
      * Register all hooks related to the public-facing functionality of the plugin.
@@ -108,7 +110,7 @@ class SafeDeliveryCOD
      */
     private function definePublicHooks()
     {
-        add_action('wp_enqueue_scripts', [$this, 'enqueuePublicStyles']);
+        add_action('wp_enqueue_scripts', array($this, 'enqueuePublicStyles'));
     }
 
     /**
@@ -137,7 +139,7 @@ class SafeDeliveryCOD
      */
     public function enqueueAdminStyles()
     {
-        wp_enqueue_style('safedeliverycod-admin-style', SDCOD_PLUGIN_URL . 'assets/css/admin.css', [], SDCOD_VERSION, 'all');
+        wp_enqueue_style('delivery_refusal_payment_manager-admin-style', DRPM_PLUGIN_URL . 'assets/css/admin.css', [], DRPM_VERSION, 'all');
     }
 
     /**
@@ -145,7 +147,7 @@ class SafeDeliveryCOD
      */
     public function enqueuePublicStyles()
     {
-        wp_enqueue_style('safedeliverycod-public-style', SDCOD_PLUGIN_URL . 'assets/css/public.css', [], SDCOD_VERSION, 'all');
+        wp_enqueue_style('delivery_refusal_payment_manager-public-style', DRPM_PLUGIN_URL . 'assets/css/public.css', [], DRPM_VERSION, 'all');
     }
 
     /**
@@ -156,7 +158,7 @@ class SafeDeliveryCOD
      */
     public function addSettingsLink($links)
     {
-        $settingsLink = '<a href="' . admin_url('admin.php?page=wc-settings&tab=safedeliverycod') . '">' . __('Settings', 'safedeliverycod') . '</a>';
+        $settingsLink = '<a href="' . admin_url('admin.php?page=wc-settings&tab=delivery_refusal_payment_manager') . '">' . __('Settings', 'delivery_refusal_payment_manager') . '</a>';
         array_push($links, $settingsLink);
         return $links;
     }
@@ -170,8 +172,8 @@ class SafeDeliveryCOD
     public function checkDeactivatedPlugin()
     {
         if (!class_exists('WooCommerce')) {
-            add_action('admin_init', [$this, 'forceDeactivate']);
-            add_action('admin_notices', [$this, 'pluginDeactivationNotice']);
+            add_action('admin_init', array($this, 'forceDeactivate'));
+            add_action('admin_notices', array($this, 'pluginDeactivationNotice'));
         }
     }
 
@@ -194,7 +196,7 @@ class SafeDeliveryCOD
      */
     public function pluginDeactivationNotice()
     {
-        echo '<div class="error"><p>' . esc_html__('Safe Delivery COD plugin has been deactivated because WooCommerce is not active. Please activate WooCommerce to use this plugin.', 'safedeliverycod') . '</p></div>';
+        echo '<div class="error"><p>' . esc_html__('WooCommerce Delivery Refusal & Payment Manager plugin has been deactivated because WooCommerce is not active. Please activate WooCommerce to use this plugin.', 'delivery_refusal_payment_manager') . '</p></div>';
     }
 
     /**
@@ -204,17 +206,27 @@ class SafeDeliveryCOD
      */
     public function isHPOSEnabled()
     {
-        if (class_exists('Automattic\WooCommerce\Utilities\FeaturesUtil') &&
-            method_exists('Automattic\WooCommerce\Utilities\FeaturesUtil', 'declare_compatibility')) {
-            return wc_get_container()->get(CustomOrdersTableController::class)->custom_orders_table_usage_is_enabled();
-        }
+		if ( OrderUtil::custom_orders_table_usage_is_enabled() ) {
+			return true;
+		}
+//         if (class_exists('Automattic\WooCommerce\Utilities\FeaturesUtil') &&
+//             method_exists('Automattic\WooCommerce\Utilities\FeaturesUtil', 'declare_compatibility')) {
+//             return wc_get_container()->get(CustomOrdersTableController::class)->custom_orders_table_usage_is_enabled();
+//         }
         return false;
     }
+	
+	public function debugingCodeAdminNotices()
+	{
+		$isEnabled = $this->isHPOSEnabled();
+		$message = $isEnabled ? 'enabled' : 'disabled';
+		echo '<div class="notice notice-info is-dismissible"><p>The HPOS in WooCommerce is currently ' . esc_html($message) . '.</p></div>';    
+	}
 }
 
 // Instantiate and initialize the plugin.
-$safeDeliveryCOD = new SafeDeliveryCOD();
+$deliveryRefusalPaymentManager = new DeliveryRefusalPaymentManager();
 
 // Activation and deactivation hooks.
-register_activation_hook(__FILE__, ['SafeDeliveryCOD', 'activate']);
-register_deactivation_hook(__FILE__, ['SafeDeliveryCOD', 'deactivate']);
+register_activation_hook(__FILE__, array('DeliveryRefusalPaymentManager', 'activate'));
+register_deactivation_hook(__FILE__, array('DeliveryRefusalPaymentManager', 'deactivate'));

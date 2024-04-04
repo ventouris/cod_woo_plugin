@@ -1,88 +1,127 @@
 <?php
-// [--] Task: Manage the registration and integration of a custom order status for high-risk COD orders.
-// Function: register_cod_risk_status() - Registers a new order status in WooCommerce for high-risk COD orders.
-// Function: add_cod_risk_status_to_list() - Inserts the custom status into various WooCommerce status filters and lists.
-// Check if WooCommerce is active
+use Automattic\WooCommerce\Utilities\OrderUtil;
+
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 
-    /**
-     * Registers a new order status for Rejected COD orders in WooCommerce.
-     */
-    function register_rejected_cod_status() {
-        register_post_status( 'wc-rejected-cod', array(
-            'label'                     => _x( 'Rejected COD', 'Order status', SDCOD_PLUGIN_SHORT_NAME ),
-            'public'                    => true,
-            'exclude_from_search'       => false,
-            'show_in_admin_all_list'    => true,
-            'show_in_admin_status_list' => true,
-            'label_count'               => _n_noop( 'Rejected COD <span class="count">(%s)</span>', 'Rejected COD <span class="count">(%s)</span>', SDCOD_PLUGIN_SHORT_NAME ),
-        ) );
-    }
-    add_action( 'init', 'register_rejected_cod_status' );
 
-    /**
-     * Inserts the custom Rejected COD status into various WooCommerce status filters and lists.
-     */
-    function add_rejected_cod_status_to_list( $order_statuses ) {
-        // Adding new status to existing WooCommerce order statuses
-        $new_order_statuses = array();
+   /**
+	 * Registers a new order status for orders refused by customers in WooCommerce.
+	 */
+	function registerRefusedByCustomerStatus()
+	{
+		register_post_status('wc-refused-delivery', [
+			'label' => _x('Order refused by customer', 'Order status', DRPM_PLUGIN_SHORT_NAME),
+			'public' => true,
+			'exclude_from_search' => false,
+			'show_in_admin_all_list' => true,
+			'show_in_admin_status_list' => true,
+			'label_count' => _n_noop('Order refused by customer <span class="count">(%s)</span>', 'Order refused by customer <span class="count">(%s)</span>', 'delivery_refusal_payment_manager'),
+		]);
+	}
+	add_action('init', 'registerRefusedByCustomerStatus');
 
-        // Ensure 'wc-rejected-cod' is inserted after 'wc-processing'
-        foreach ( $order_statuses as $key => $status ) {
-            $new_order_statuses[ $key ] = $status;
+	/**
+	 * Inserts the custom "Order refused by customer" status into various WooCommerce status filters and lists.
+	 */
+	function addRefusedByCustomerStatusToList($order_statuses)
+	{
+		$new_order_statuses = [];
 
-            if ( 'wc-processing' === $key ) {
-                $new_order_statuses['wc-rejected-cod'] = _x( 'Rejected COD', 'Order status', SDCOD_PLUGIN_SHORT_NAME );
-            }
-        }
+		foreach ($order_statuses as $key => $status) {
+			$new_order_statuses[$key] = $status;
 
-        return $new_order_statuses;
-    }
-    add_filter( 'wc_order_statuses', 'add_rejected_cod_status_to_list' );
+			if ('wc-processing' === $key) {
+				$new_order_statuses['wc-refused-delivery'] = _x('Order refused by customer', 'Order status', 'delivery_refusal_payment_manager');
+			}
+		}
+
+		return $new_order_statuses;
+	}
+	add_filter('wc_order_statuses', 'addRefusedByCustomerStatusToList');
+
+	/**
+	 * Registers a bulk action for changing order status to "Order refused by customer".
+	 */
+	function registerBulkAction($bulk_actions)
+	{
+		$bulk_actions['mark_refused_by_customer'] = __('Change status to Order refused by customer', 'delivery_refusal_payment_manager');
+		return $bulk_actions;
+	}
+	add_filter('bulk_actions-woocommerce_page_wc-orders', 'registerBulkAction');
+
+	/**
+	 * Handles the bulk action for changing order statuses to "Order refused by customer".
+	 */
+	function bulkProcessCustomStatus($redirect, $doaction, $object_ids)
+	{
+		if ('mark_refused_by_customer' === $doaction) {
+			foreach ($object_ids as $order_id) {
+				$order = wc_get_order($order_id);
+				$order->update_status('wc-refused-delivery');
+			}
+
+			$redirect = add_query_arg([
+				'bulk_refused_by_customer' => 'marked_refused_by_customer',
+				'changed' => count($object_ids),
+			], $redirect);
+		}
+
+		return $redirect;
+	}
+	add_action('handle_bulk_actions-woocommerce_page_wc-orders', 'bulkProcessCustomStatus', 20, 3);
+
+	/**
+	 * Displays admin notices after bulk changing order statuses to "Order refused by customer".
+	 */
+	function customOrderStatusNotices()
+	{
+		if (
+			isset($_REQUEST['bulk_refused_delivery']) &&
+			'marked_refused_delivery' === $_REQUEST['bulk_refused_delivery'] &&
+			isset($_REQUEST['changed']) && 
+			$_REQUEST['changed']
+		) {
+			printf(
+				'<div id="message" class="updated notice is-dismissible"><p>' .
+				_n('%s order status changed to Order refused by customer.', '%s order statuses changed to Order refused by customer.', intval($_REQUEST['changed']), 'delivery_refusal_payment_manager') . '</p></div>',
+				intval($_REQUEST['changed'])
+			);
+		}
+	}
+	add_action('admin_notices', 'customOrderStatusNotices');
+
+	
+	/**
+	 * Add metadata to the order if a payment method has been removed from the checkout
+	 */
+	function addCustomOrderMetaData($order_id)
+	{
+		$order = wc_get_order( $order_id );
+		if ($order) {
+			$order->add_meta_data( '_drpm_payment_method_hidden', true );
+			$order->save();
+		}
+
+	}
+	add_action("woocommerce_new_order","addCustomOrderMetaData");
 	
 	
-	function register_bulk_action( $bulk_actions ) {
-        $bulk_actions['mark_rejected_cod'] = __( 'Change status to Rejected COD', SDCOD_PLUGIN_SHORT_NAME ); 
-        return $bulk_actions;
-    }
-	add_filter( 'bulk_actions-woocommerce_page_wc-orders', 'register_bulk_action'  );
+	function addCssClassToOrderListRow($classes, $class, $post_id)
+	{
+		if ('shop_order' === OrderUtil::get_order_type( $post_id ) && is_admin()) {
+			$order = wc_get_order($post_id);
 
+			$meta_value = $order->get_meta('_drpm_payment_method_hidden', true);
 
-    function bulk_process_custom_status( $redirect, $doaction, $object_ids ) {
-        if ( 'mark_rejected_cod' === $doaction ) {
-            foreach ( $object_ids as $order_id ) {
-                $order = wc_get_order( $order_id );
-                $order->update_status( 'wc-rejected-cod' );
-            }
+			if (!empty($meta_value)) {
+				// Add a custom class
+				$classes[] = 'drpm_payment_method_hidden_class';
+			}
+		}
 
-            $redirect = add_query_arg(
-                array(
-                    'bulk_rejected_cod' => 'marked_rejected_cod',
-                    'changed' => count( $object_ids ),
-                ),
-                $redirect
-            );
-        }
-
-        return $redirect;
-    }
-	add_action('handle_bulk_actions-woocommerce_page_wc-orders', 'bulk_process_custom_status', 20, 3);
-
-    function custom_order_status_notices() {
-        if ( 
-            isset( $_REQUEST['bulk_rejected_cod'] ) && 
-            'marked_rejected_cod' === $_REQUEST['bulk_rejected_cod'] &&
-            isset( $_REQUEST['changed'] ) && 
-            $_REQUEST['changed'] 
-        ) {
-            printf(
-                '<div id="message" class="updated notice is-dismissible"><p>' . 
-                _n( '%s order status changed to Rejected COD.', '%s order statuses changed to Rejected COD.', intval( $_REQUEST['changed'] ), SDCOD_PLUGIN_SHORT_NAME ) . '</p></div>', 
-                intval( $_REQUEST['changed'] )
-            );
-        }
-    }
-	add_action( 'admin_notices', 'custom_order_status_notices' );
-
+		return $classes;
+		
+	}
+	add_filter('post_class', 'addCssClassToOrderListRow', 10, 3);
 
 }

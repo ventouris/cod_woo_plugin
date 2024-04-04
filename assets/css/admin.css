@@ -1,0 +1,9 @@
+#checkbox_warning {
+	display: none;
+	color: red;
+	font-weight: bold;
+}
+
+.drpm_payment_method_hidden_class {
+    background-color: #ffe4e8;
+}
