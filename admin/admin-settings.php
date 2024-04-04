@@ -181,7 +181,7 @@ if ( ! class_exists( 'DRPM_Settings' ) ) {
                     'desc'     => __( 'Enter the threshold number or percentage of refused orders that will trigger the risk detection process.' ),
                     'id'       => 'threshold_value',
                     'type'     => 'number',
-                    'css'      => 'min-width:50px;',
+                    'css'      => 'width:50px;',
                     //'desc_tip' => true,
 					'value'    => 2
                 );
@@ -234,7 +234,7 @@ if ( ! class_exists( 'DRPM_Settings' ) ) {
                     'desc'     => __( 'Specify how many months in the past to analyze for refused deliveries.', 'delivery_refusal_payment_manager' ),
                     'id'       => 'number_of_months',
                     'type'     => 'number',
-                    'css'      => 'min-width:50px;',
+                    'css'      => 'width:50px;',
                  //   'desc_tip' => true,
 					'value'    => 24
                 );
