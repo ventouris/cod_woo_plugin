@@ -7,3 +7,9 @@
 .drpm_payment_method_hidden_class {
     background-color: #ffe4e8;
 }
+/*Settings page start*/
+tr ul:has(.threshold_type) {
+    display: flex;
+    gap: 20px;
+}
+/*Settings page stop*/
