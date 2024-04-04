@@ -166,13 +166,14 @@ if ( ! class_exists( 'DRPM_Settings' ) ) {
                     'title'    => __( 'Threshold Type', 'delivery_refusal_payment_manager' ),
                     'id'       => 'threshold_type',
                     'type'    => 'radio',
-    				'options' => array(
-        				'number' => __('Number', 'delivery_refusal_payment_manager'),
-        				'percentage' => __('Percentage', 'delivery_refusal_payment_manager')
-    				),
-    				'default' => 'number',
-					'desc' 	 => __('Specify whether to use a fixed number or a percentage of past refused orders to trigger risk detection.', 'delivery_refusal_payment_manager'),
-					//'desc_tip' => true
+		    'class' => 'threshold_type',
+    		    'options' => array(
+        	        'number' => __('Number', 'delivery_refusal_payment_manager'),
+        		'percentage' => __('Percentage', 'delivery_refusal_payment_manager')
+    			),
+    		    'default' => 'number',
+		    'desc' 	 => __('Specify whether to use a fixed number or a percentage of past refused orders to trigger risk detection.', 'delivery_refusal_payment_manager'),
+		    //'desc_tip' => true
                 );
 				
 			$settings[] = array(
