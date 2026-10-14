@@ -10,9 +10,54 @@ if (!class_exists('DRPM_Risk')) {
     class DRPM_Risk
     {
         const USER_OVERRIDE_META = '_drpm_override';
+        const GATEWAY_OPTION_PREFIX = 'drpm_hide_gateway_';
+        const OPTIONS_VERSION = '2';
 
         /** @var array<string,array> Per-request cache. */
         private static $cache = array();
+
+        /**
+         * Moves settings from the 2.0 option names (some unprefixed, one misspelled) to
+         * the drpm_ prefix. Generic names like "threshold_value" might also belong to
+         * another plugin, so those are copied but never deleted.
+         */
+        public static function maybeMigrateOptions()
+        {
+            if (self::OPTIONS_VERSION === get_option('drpm_options_version')) {
+                return;
+            }
+
+            $owned = array(
+                'customer_data_fields_email'                  => 'drpm_match_email',
+                'customer_data_fields_email_mobile'           => 'drpm_match_phone',
+                'customer_data_fields_email_shipping_address' => 'drpm_match_shipping_address',
+                'customer_data_fields_email_billing_address'  => 'drpm_match_billing_address',
+                'customer_data_fields_email_full_name'        => 'drpm_match_full_name',
+                'delete_all_data_after_plugin_deletion'       => 'drpm_delete_data_on_uninstall',
+            );
+            $shared = array(
+                'threshold_type'   => 'drpm_threshold_type',
+                'threshold_value'  => 'drpm_threshold_value',
+                'number_of_months' => 'drpm_lookback_months',
+            );
+            if (function_exists('WC') && WC()->payment_gateways()) {
+                foreach (array_keys(WC()->payment_gateways()->payment_gateways()) as $id) {
+                    $owned['dprm_payment_method_' . $id] = self::GATEWAY_OPTION_PREFIX . $id;
+                }
+            }
+
+            foreach (array_merge($owned, $shared) as $old => $new) {
+                $value = get_option($old, null);
+                if (null !== $value && null === get_option($new, null)) {
+                    update_option($new, $value);
+                }
+                if (isset($owned[$old])) {
+                    delete_option($old);
+                }
+            }
+
+            update_option('drpm_options_version', self::OPTIONS_VERSION);
+        }
 
         public static function isEnabled()
         {
@@ -46,7 +91,7 @@ if (!class_exists('DRPM_Risk')) {
         {
             $gateways = array();
             foreach (WC()->payment_gateways()->payment_gateways() as $id => $gateway) {
-                if ('yes' === get_option('dprm_payment_method_' . $id, 'cod' === $id ? 'yes' : 'no')) {
+                if ('yes' === get_option(self::GATEWAY_OPTION_PREFIX . $id, 'cod' === $id ? 'yes' : 'no')) {
                     $gateways[] = $id;
                 }
             }
@@ -56,14 +101,14 @@ if (!class_exists('DRPM_Risk')) {
 
         public static function months()
         {
-            return max(0, (int) get_option('number_of_months', 24));
+            return max(0, (int) get_option('drpm_lookback_months', 24));
         }
 
         public static function settings()
         {
             return array(
-                'type'       => 'percentage' === get_option('threshold_type', 'number') ? 'percentage' : 'number',
-                'value'      => (float) get_option('threshold_value', 2),
+                'type'       => 'percentage' === get_option('drpm_threshold_type', 'number') ? 'percentage' : 'number',
+                'value'      => (float) get_option('drpm_threshold_value', 2),
                 'min_orders' => max(1, (int) get_option('drpm_min_orders', 1)),
                 'months'     => self::months(),
             );
@@ -225,11 +270,11 @@ if (!class_exists('DRPM_Risk')) {
         public static function fieldLabel($key)
         {
             $labels = array(
-                'email'            => __('Email', DRPM_TEXT_DOMAIN),
-                'phone'            => __('Mobile number', DRPM_TEXT_DOMAIN),
-                'shipping_address' => __('Shipping address', DRPM_TEXT_DOMAIN),
-                'billing_address'  => __('Billing address', DRPM_TEXT_DOMAIN),
-                'full_name'        => __('Full name', DRPM_TEXT_DOMAIN),
+                'email'            => __('Email', 'cod-guard'),
+                'phone'            => __('Phone number', 'cod-guard'),
+                'shipping_address' => __('Shipping address', 'cod-guard'),
+                'billing_address'  => __('Billing address', 'cod-guard'),
+                'full_name'        => __('Full name', 'cod-guard'),
             );
 
             return $labels[$key] ?? $key;

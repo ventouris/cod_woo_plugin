@@ -5,7 +5,7 @@ if (!defined('ABSPATH')) {
 
 if (!class_exists('DRPM_CLI')) {
     /**
-     * Manage the Delivery Refusal & Payment Manager.
+     * Manage COD Guard.
      */
     class DRPM_CLI
     {
@@ -14,7 +14,7 @@ if (!class_exists('DRPM_CLI')) {
          *
          * ## EXAMPLES
          *
-         *     wp drpm reindex
+         *     wp cod-guard reindex
          */
         public function reindex()
         {
@@ -54,7 +54,7 @@ if (!class_exists('DRPM_CLI')) {
          *
          * ## EXAMPLES
          *
-         *     wp drpm check 123
+         *     wp cod-guard check 123
          */
         public function check($args, $assocArgs)
         {
@@ -72,5 +72,5 @@ if (!class_exists('DRPM_CLI')) {
         }
     }
 
-    WP_CLI::add_command('drpm', 'DRPM_CLI');
+    WP_CLI::add_command('cod-guard', 'DRPM_CLI');
 }

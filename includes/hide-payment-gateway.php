@@ -17,11 +17,34 @@ if (!class_exists('DRPM_Checkout')) {
         const FLAG_META = '_drpm_payment_method_hidden';
         const SNAPSHOT_META = '_drpm_risk_snapshot';
 
+        /** The default checkout message, untranslated (how it's stored when left unchanged). */
+        const DEFAULT_NOTICE = 'Some payment methods aren\'t available for this order. Please choose one of the options below, or contact us if you think this is a mistake.';
+
+        public static function defaultNotice()
+        {
+            return __('Some payment methods aren\'t available for this order. Please choose one of the options below, or contact us if you think this is a mistake.', 'cod-guard');
+        }
+
+        /**
+         * An unchanged default message is shown in the visitor's language, whatever
+         * language the admin had when the settings were saved.
+         */
+        public static function translateDefaultNotice($value)
+        {
+            $stored = trim((string) $value);
+            if (self::DEFAULT_NOTICE === $stored) {
+                return self::defaultNotice();
+            }
+
+            return $value;
+        }
+
         /** @var bool Whether gateways were hidden during this request. */
         private static $hidden = false;
 
         public static function register()
         {
+            add_filter('option_drpm_customer_notice', array(__CLASS__, 'translateDefaultNotice'));
             add_filter('woocommerce_available_payment_gateways', array(__CLASS__, 'filterGateways'), 100);
 
             // Flag new orders placed by at-risk customers (classic + block checkout).
@@ -187,7 +210,7 @@ if (!class_exists('DRPM_Checkout')) {
 
         public static function renderNotice()
         {
-            $message = trim((string) get_option('drpm_customer_notice', ''));
+            $message = trim((string) get_option('drpm_customer_notice', self::defaultNotice()));
             if ('' === $message || !self::$hidden) {
                 return;
             }

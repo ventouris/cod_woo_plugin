@@ -1,0 +1,762 @@
+# Copyright (C) 2026 Tasos Ventouris
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: COD Guard for WooCommerce 2.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/cod-guard\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-14T22:40:59+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: cod-guard\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Plugin Name of the plugin
+#: cod-guard.php
+msgid "COD Guard for WooCommerce"
+msgstr "COD Guard για WooCommerce"
+
+#. Plugin URI of the plugin
+#: cod-guard.php
+msgid "https://github.com/ventouris/cod_woo_plugin"
+msgstr "https://github.com/ventouris/cod_woo_plugin"
+
+#. Description of the plugin
+#: cod-guard.php
+msgid "Stop losing money on refused cash-on-delivery parcels. Tracks refused deliveries, recognises repeat refusers and hides cash on delivery (or any payment method you choose) from them at checkout."
+msgstr "Σταματήστε να χάνετε χρήματα από δέματα αντικαταβολής που δεν παραλαμβάνονται. Καταγράφει τις αρνήσεις παραλαβής, αναγνωρίζει όσους αρνούνται επανειλημμένα και τους κρύβει την αντικαταβολή (ή όποιον τρόπο πληρωμής επιλέξετε) στο ταμείο."
+
+#. Author of the plugin
+#: cod-guard.php
+msgid "Tasos Ventouris"
+msgstr "Tasos Ventouris"
+
+#. Author URI of the plugin
+#: cod-guard.php
+msgid "https://github.com/ventouris"
+msgstr "https://github.com/ventouris"
+
+#: admin/admin-dashboard.php:46
+#: admin/admin-dashboard.php:47
+#: admin/admin-dashboard.php:89
+#: admin/admin-order-meta.php:43
+#: admin/admin-users-meta.php:35
+#: includes/class-drpm-privacy.php:44
+msgid "COD Guard"
+msgstr "COD Guard"
+
+#: admin/admin-dashboard.php:70
+#: admin/admin-dashboard.php:216
+#: admin/admin-dashboard.php:278
+msgid "Refused"
+msgstr "Αρνήσεις"
+
+#: admin/admin-dashboard.php:71
+#: admin/admin-dashboard.php:217
+#: admin/admin-dashboard.php:279
+msgid "Completed"
+msgstr "Ολοκληρωμένες"
+
+#: admin/admin-dashboard.php:72
+#: admin/admin-dashboard.php:150
+#: admin/admin-dashboard.php:226
+#: admin/admin-dashboard.php:255
+msgid "Refusal rate"
+msgstr "Ποσοστό αρνήσεων"
+
+#: admin/admin-dashboard.php:84
+msgid "Dashboard"
+msgstr "Πίνακας ελέγχου"
+
+#: admin/admin-dashboard.php:85
+#: cod-guard.php:161
+msgid "Settings"
+msgstr "Ρυθμίσεις"
+
+#: admin/admin-dashboard.php:90
+msgid "Sections"
+msgstr "Ενότητες"
+
+#: admin/admin-dashboard.php:124
+msgid "Last 30 days"
+msgstr "Τελευταίες 30 ημέρες"
+
+#: admin/admin-dashboard.php:125
+msgid "Last 90 days"
+msgstr "Τελευταίες 90 ημέρες"
+
+#: admin/admin-dashboard.php:126
+msgid "Last 12 months"
+msgstr "Τελευταίοι 12 μήνες"
+
+#: admin/admin-dashboard.php:127
+msgid "All time"
+msgstr "Όλο το διάστημα"
+
+#: admin/admin-dashboard.php:130
+msgid "Refused deliveries per day"
+msgstr "Αρνήσεις παραλαβής ανά ημέρα"
+
+#: admin/admin-dashboard.php:130
+msgid "Refusal rate per day"
+msgstr "Ποσοστό αρνήσεων ανά ημέρα"
+
+#: admin/admin-dashboard.php:131
+msgid "Refused deliveries per week"
+msgstr "Αρνήσεις παραλαβής ανά εβδομάδα"
+
+#: admin/admin-dashboard.php:131
+msgid "Refusal rate per week"
+msgstr "Ποσοστό αρνήσεων ανά εβδομάδα"
+
+#: admin/admin-dashboard.php:132
+msgid "Refused deliveries per month"
+msgstr "Αρνήσεις παραλαβής ανά μήνα"
+
+#: admin/admin-dashboard.php:132
+msgid "Refusal rate per month"
+msgstr "Ποσοστό αρνήσεων ανά μήνα"
+
+#: admin/admin-dashboard.php:137
+msgid "Date range"
+msgstr "Χρονικό διάστημα"
+
+#: admin/admin-dashboard.php:145
+msgid "Existing orders are still being indexed in the background, so these numbers may be incomplete."
+msgstr "Οι υπάρχουσες παραγγελίες ευρετηριάζονται ακόμη στο παρασκήνιο, οπότε τα νούμερα μπορεί να μην είναι πλήρη."
+
+#: admin/admin-dashboard.php:148
+msgid "Key figures"
+msgstr "Βασικά μεγέθη"
+
+#. translators: 1: refused, 2: refused + completed
+#: admin/admin-dashboard.php:157
+#, php-format
+msgid "%1$s of %2$s delivery attempts refused"
+msgstr "%1$s από %2$s αποστολές δεν παραλήφθηκαν"
+
+#: admin/admin-dashboard.php:166
+msgid "Refused deliveries"
+msgstr "Αρνήσεις παραλαβής"
+
+#: admin/admin-dashboard.php:172
+msgid "Cost of refusals"
+msgstr "Κόστος αρνήσεων"
+
+#. translators: %s: cost per refused parcel
+#: admin/admin-dashboard.php:178
+#, php-format
+msgid "at %s per refused parcel"
+msgstr "με %s ανά δέμα που επέστρεψε"
+
+#: admin/admin-dashboard.php:183
+msgid "Set your cost per refused parcel"
+msgstr "Ορίστε το κόστος ανά δέμα που επιστρέφει"
+
+#: admin/admin-dashboard.php:188
+msgid "Order value refused"
+msgstr "Αξία παραγγελιών που δεν παραλήφθηκαν"
+
+#: admin/admin-dashboard.php:190
+msgid "Sales that didn't go through"
+msgstr "Πωλήσεις που δεν ολοκληρώθηκαν"
+
+#: admin/admin-dashboard.php:194
+msgid "Checkouts with methods hidden"
+msgstr "Παραγγελίες με κρυμμένους τρόπους πληρωμής"
+
+#. translators: %s: number of orders
+#: admin/admin-dashboard.php:200
+#, php-format
+msgid "%s completed with another payment method"
+msgstr "%s ολοκληρώθηκαν με άλλο τρόπο πληρωμής"
+
+#: admin/admin-dashboard.php:215
+#: admin/admin-dashboard.php:225
+msgid "Period"
+msgstr "Περίοδος"
+
+#: admin/admin-dashboard.php:234
+msgid "Refusal rate by payment method"
+msgstr "Ποσοστό αρνήσεων ανά τρόπο πληρωμής"
+
+#: admin/admin-dashboard.php:238
+msgid "Regions with the most refusals"
+msgstr "Περιοχές με τις περισσότερες αρνήσεις"
+
+#: admin/admin-dashboard.php:245
+msgid "Most refused products"
+msgstr "Προϊόντα με τις περισσότερες αρνήσεις"
+
+#: admin/admin-dashboard.php:247
+msgid "Product data needs WooCommerce Analytics to be enabled."
+msgstr "Τα στοιχεία προϊόντων απαιτούν ενεργό το WooCommerce Analytics."
+
+#: admin/admin-dashboard.php:249
+msgid "No refused products in this period."
+msgstr "Κανένα προϊόν με άρνηση παραλαβής σε αυτό το διάστημα."
+
+#: admin/admin-dashboard.php:253
+msgid "Product"
+msgstr "Προϊόν"
+
+#: admin/admin-dashboard.php:254
+#: admin/admin-settings.php:433
+msgid "Refused orders"
+msgstr "Παραγγελίες με άρνηση"
+
+#: admin/admin-dashboard.php:271
+msgid "Repeat refusers"
+msgstr "Πελάτες με επαναλαμβανόμενες αρνήσεις"
+
+#: admin/admin-dashboard.php:273
+msgid "No customer refused more than once in this period."
+msgstr "Κανένας πελάτης δεν αρνήθηκε παραλαβή περισσότερες από μία φορές σε αυτό το διάστημα."
+
+#: admin/admin-dashboard.php:277
+msgid "Customer"
+msgstr "Πελάτης"
+
+#: admin/admin-dashboard.php:280
+msgid "Last refusal"
+msgstr "Τελευταία άρνηση"
+
+#: admin/admin-dashboard.php:281
+#: includes/class-drpm-privacy.php:83
+msgid "Status"
+msgstr "Κατάσταση"
+
+#: admin/admin-dashboard.php:295
+#: admin/admin-users-meta.php:49
+msgid "Methods hidden"
+msgstr "Κρυμμένοι τρόποι πληρωμής"
+
+#: admin/admin-dashboard.php:297
+msgid "Allowed"
+msgstr "Χωρίς περιορισμό"
+
+#. translators: %s: list of statuses
+#: admin/admin-dashboard.php:312
+#, php-format
+msgid "Refusal rate = refused ÷ (refused + %s) orders, by order date. Checkouts with methods hidden are orders placed after COD Guard hid payment methods."
+msgstr "Ποσοστό αρνήσεων = αρνήσεις ÷ (αρνήσεις + %s) παραγγελίες, βάσει ημερομηνίας παραγγελίας. Οι παραγγελίες με κρυμμένους τρόπους πληρωμής είναι όσες έγιναν αφού το COD Guard έκρυψε τρόπους πληρωμής."
+
+#: admin/admin-dashboard.php:335
+msgid "No change vs previous period"
+msgstr "Καμία μεταβολή σε σχέση με την προηγούμενη περίοδο"
+
+#: admin/admin-dashboard.php:352
+msgid "vs previous period"
+msgstr "σε σχέση με την προηγούμενη περίοδο"
+
+#: admin/admin-dashboard.php:367
+msgid "No orders in this period."
+msgstr "Καμία παραγγελία σε αυτό το διάστημα."
+
+#: admin/admin-dashboard.php:371
+msgid "Show data table"
+msgstr "Εμφάνιση πίνακα δεδομένων"
+
+#: admin/admin-dashboard.php:402
+msgid "No refusals in this period."
+msgstr "Καμία άρνηση παραλαβής σε αυτό το διάστημα."
+
+#. translators: 1: refused, 2: attempts
+#: admin/admin-dashboard.php:415
+#, php-format
+msgid "%1$s of %2$s"
+msgstr "%1$s από %2$s"
+
+#. translators: %s: rate
+#: admin/admin-dashboard.php:421
+#, php-format
+msgid "%s%% rate"
+msgstr "ποσοστό %s%%"
+
+#: admin/admin-order-meta.php:78
+msgid "Refused deliveries:"
+msgstr "Αρνήσεις παραλαβής:"
+
+#: admin/admin-order-meta.php:83
+msgid "Completed orders:"
+msgstr "Ολοκληρωμένες παραγγελίες:"
+
+#: admin/admin-order-meta.php:88
+msgid "Refusal rate:"
+msgstr "Ποσοστό αρνήσεων:"
+
+#: admin/admin-order-meta.php:96
+#, php-format
+msgid "Other orders in the last %1$d months matching: %2$s."
+msgstr "Άλλες παραγγελίες των τελευταίων %1$d μηνών με ίδιο: %2$s."
+
+#: admin/admin-order-meta.php:97
+#, php-format
+msgid "Other orders (all time) matching: %2$s."
+msgstr "Άλλες παραγγελίες (όλο το διάστημα) με ίδιο: %2$s."
+
+#: admin/admin-order-meta.php:110
+msgid "Refused orders:"
+msgstr "Παραγγελίες με άρνηση:"
+
+#: admin/admin-order-meta.php:114
+msgid "Payment methods were hidden when this order was placed."
+msgstr "Κατά την παραγγελία, κάποιοι τρόποι πληρωμής ήταν κρυμμένοι."
+
+#: admin/admin-order-meta.php:122
+msgid "Set an exception for this customer"
+msgstr "Ορισμός εξαίρεσης για αυτόν τον πελάτη"
+
+#: admin/admin-order-meta.php:138
+#: admin/admin-order-meta.php:142
+msgid "Delivery risk"
+msgstr "Κίνδυνος άρνησης"
+
+#. translators: 1: refused orders, 2: refused + completed orders
+#: admin/admin-order-meta.php:180
+#, php-format
+msgid "%1$d / %2$d refused"
+msgstr "%1$d / %2$d αρνήσεις"
+
+#: admin/admin-order-meta.php:191
+msgid "Always blocked (exception)"
+msgstr "Πάντα αποκλεισμένος (εξαίρεση)"
+
+#: admin/admin-order-meta.php:193
+msgid "Always trusted (exception)"
+msgstr "Πάντα αξιόπιστος (εξαίρεση)"
+
+#: admin/admin-order-meta.php:195
+msgid "High risk · methods hidden"
+msgstr "Υψηλός κίνδυνος · κρυμμένοι τρόποι πληρωμής"
+
+#. translators: %d: number of refused orders
+#: admin/admin-order-meta.php:200
+#, php-format
+msgid "Watch · %d refusal"
+msgid_plural "Watch · %d refusals"
+msgstr[0] "Προσοχή · %d άρνηση"
+msgstr[1] "Προσοχή · %d αρνήσεις"
+
+#: admin/admin-order-meta.php:203
+msgid "No refusal history"
+msgstr "Χωρίς ιστορικό αρνήσεων"
+
+#: admin/admin-settings.php:74
+msgid "Your settings have been saved."
+msgstr "Οι ρυθμίσεις σας αποθηκεύτηκαν."
+
+#: admin/admin-settings.php:90
+msgid "Save changes"
+msgstr "Αποθήκευση αλλαγών"
+
+#: admin/admin-settings.php:115
+msgid "Settings were not saved. Pick at least one way to recognise customers and one payment method to hide."
+msgstr "Οι ρυθμίσεις δεν αποθηκεύτηκαν. Επιλέξτε τουλάχιστον έναν τρόπο αναγνώρισης πελατών και έναν τρόπο πληρωμής για απόκρυψη."
+
+#: admin/admin-settings.php:135
+msgid "(disabled)"
+msgstr "(απενεργοποιημένος)"
+
+#: admin/admin-settings.php:197
+msgid "Order index"
+msgstr "Ευρετήριο παραγγελιών"
+
+#. translators: %d: number of orders
+#: admin/admin-settings.php:204
+#, php-format
+msgid "Being built in the background (%d orders processed so far)."
+msgstr "Δημιουργείται στο παρασκήνιο (%d παραγγελίες μέχρι στιγμής)."
+
+#. translators: 1: number of orders, 2: date
+#: admin/admin-settings.php:210
+#, php-format
+msgid "Contains %1$s orders, last rebuilt %2$s."
+msgstr "Περιέχει %1$s παραγγελίες, τελευταία ανανέωση %2$s."
+
+#: admin/admin-settings.php:215
+msgid "Existing orders have not been indexed yet."
+msgstr "Οι υπάρχουσες παραγγελίες δεν έχουν ευρετηριαστεί ακόμη."
+
+#: admin/admin-settings.php:218
+msgid "Rebuild order index"
+msgstr "Ανακατασκευή ευρετηρίου"
+
+#: admin/admin-settings.php:220
+msgid "New and updated orders are indexed automatically. Rebuild only if numbers look wrong."
+msgstr "Οι νέες και οι ενημερωμένες παραγγελίες ευρετηριάζονται αυτόματα. Κάντε ανακατασκευή μόνο αν τα νούμερα φαίνονται λάθος."
+
+#: admin/admin-settings.php:229
+msgid "You are not allowed to do this."
+msgstr "Δεν έχετε δικαίωμα για αυτή την ενέργεια."
+
+#: admin/admin-settings.php:248
+msgid "Restriction rule"
+msgstr "Κανόνας περιορισμού"
+
+#: admin/admin-settings.php:250
+msgid "Restrict when a customer has refused"
+msgstr "Περιορισμός όταν ο πελάτης έχει αρνηθεί"
+
+#: admin/admin-settings.php:252
+msgid "Rule type"
+msgstr "Τύπος κανόνα"
+
+#: admin/admin-settings.php:253
+msgid "or more orders"
+msgstr "ή περισσότερες παραγγελίες"
+
+#: admin/admin-settings.php:254
+msgid "% or more of their orders"
+msgstr "% ή περισσότερο των παραγγελιών του"
+
+#: admin/admin-settings.php:257
+msgid "once they have at least"
+msgstr "εφόσον έχει τουλάχιστον"
+
+#: admin/admin-settings.php:259
+msgid "completed or refused orders"
+msgstr "ολοκληρωμένες παραγγελίες ή αρνήσεις"
+
+#: admin/admin-settings.php:261
+msgid "Set it to 0 to turn off automatic restriction. The exception lists still apply."
+msgstr "Βάλτε 0 για να απενεργοποιήσετε τον αυτόματο περιορισμό. Οι λίστες εξαιρέσεων εξακολουθούν να ισχύουν."
+
+#: admin/admin-settings.php:296
+msgid "General"
+msgstr "Γενικά"
+
+#: admin/admin-settings.php:301
+msgid "Protect checkout"
+msgstr "Προστασία ταμείου"
+
+#: admin/admin-settings.php:302
+msgid "Hide risky payment methods from customers with a history of refused deliveries"
+msgstr "Απόκρυψη επικίνδυνων τρόπων πληρωμής από πελάτες με ιστορικό αρνήσεων παραλαβής"
+
+#: admin/admin-settings.php:313
+msgid "Recognise returning customers by"
+msgstr "Αναγνώριση επιστρεφόντων πελατών με βάση"
+
+#: admin/admin-settings.php:315
+msgid "A past order counts towards a customer's history when it matches any of the details below. Logged-in customers are always matched by their account too. Addresses and names can also match other people (housemates, common names), so use them together with email or phone."
+msgstr "Μια προηγούμενη παραγγελία μετράει στο ιστορικό του πελάτη όταν ταιριάζει σε οποιοδήποτε από τα παρακάτω στοιχεία. Οι συνδεδεμένοι πελάτες αναγνωρίζονται πάντα και από τον λογαριασμό τους. Οι διευθύνσεις και τα ονόματα μπορεί να ταιριάζουν και με άλλα άτομα (συγκάτοικοι, συνηθισμένα ονόματα), γι' αυτό χρησιμοποιήστε τα μαζί με το email ή το τηλέφωνο."
+
+#: admin/admin-settings.php:328
+msgid "Match on"
+msgstr "Αντιστοίχιση με"
+
+#: admin/admin-settings.php:343
+msgid "When to restrict"
+msgstr "Πότε εφαρμόζεται περιορισμός"
+
+#: admin/admin-settings.php:353
+msgid "Look-back period"
+msgstr "Περίοδος ελέγχου"
+
+#: admin/admin-settings.php:354
+msgid "Only refusals from this many months back count. 0 means all time."
+msgstr "Μετρούν μόνο οι αρνήσεις αυτού του αριθμού μηνών. Το 0 σημαίνει όλο το διάστημα."
+
+#: admin/admin-settings.php:358
+msgid "months"
+msgstr "μήνες"
+
+#: admin/admin-settings.php:368
+msgid "Hide these payment methods"
+msgstr "Απόκρυψη αυτών των τρόπων πληρωμής"
+
+#: admin/admin-settings.php:370
+msgid "Hidden at checkout for customers who meet the rule. If hiding them would leave no way to pay, nothing is hidden."
+msgstr "Κρύβονται στο ταμείο για πελάτες που πληρούν τον κανόνα. Αν η απόκρυψη δεν άφηνε κανέναν τρόπο πληρωμής, δεν κρύβεται τίποτα."
+
+#: admin/admin-settings.php:386
+msgid "Payment methods"
+msgstr "Τρόποι πληρωμής"
+
+#: admin/admin-settings.php:395
+msgid "Checkout message"
+msgstr "Μήνυμα στο ταμείο"
+
+#: admin/admin-settings.php:396
+msgid "Shown above the \"Place order\" button when payment methods are hidden (classic checkout). Leave it empty to hide them without a message."
+msgstr "Εμφανίζεται πάνω από το κουμπί «Ολοκλήρωση παραγγελίας» όταν κρύβονται τρόποι πληρωμής (κλασικό ταμείο). Αφήστε το κενό για απόκρυψη χωρίς μήνυμα."
+
+#: admin/admin-settings.php:408
+msgid "Exceptions"
+msgstr "Εξαιρέσεις"
+
+#: admin/admin-settings.php:410
+msgid "Email addresses or phone numbers, one per line. You can also set this per customer on their user profile."
+msgstr "Διευθύνσεις email ή αριθμοί τηλεφώνου, ένα ανά γραμμή. Μπορείτε να το ορίσετε και ανά πελάτη στο προφίλ χρήστη του."
+
+#: admin/admin-settings.php:414
+#: includes/class-drpm-privacy.php:99
+msgid "Always block"
+msgstr "Πάντα αποκλεισμός"
+
+#: admin/admin-settings.php:415
+msgid "Never offered the hidden payment methods."
+msgstr "Δεν βλέπουν ποτέ τους κρυμμένους τρόπους πληρωμής."
+
+#: admin/admin-settings.php:421
+#: includes/class-drpm-privacy.php:99
+msgid "Always trust"
+msgstr "Πάντα αξιόπιστος"
+
+#: admin/admin-settings.php:422
+msgid "Never restricted, whatever their history."
+msgstr "Δεν περιορίζονται ποτέ, ανεξάρτητα από το ιστορικό τους."
+
+#: admin/admin-settings.php:438
+msgid "Cost per refused parcel"
+msgstr "Κόστος ανά δέμα που επιστρέφει"
+
+#: admin/admin-settings.php:439
+msgid "Shipping out and back plus handling. Used for the \"Cost of refusals\" figure on the dashboard."
+msgstr "Μεταφορικά αποστολής και επιστροφής μαζί με τη διαχείριση. Χρησιμοποιείται για το «Κόστος αρνήσεων» στον πίνακα ελέγχου."
+
+#: admin/admin-settings.php:448
+msgid "Restock"
+msgstr "Επαναφορά αποθέματος"
+
+#: admin/admin-settings.php:449
+msgid "Put items back in stock when an order is marked \"Delivery refused\""
+msgstr "Επιστροφή των προϊόντων στο απόθεμα όταν μια παραγγελία σημειώνεται ως «Άρνηση παραλαβής»"
+
+#: admin/admin-settings.php:460
+msgid "Advanced"
+msgstr "Για προχωρημένους"
+
+#: admin/admin-settings.php:470
+msgid "Uninstall"
+msgstr "Απεγκατάσταση"
+
+#: admin/admin-settings.php:471
+msgid "Remove all plugin data when the plugin is deleted (orders marked \"Delivery refused\" become Cancelled)"
+msgstr "Διαγραφή όλων των δεδομένων του πρόσθετου όταν διαγραφεί (οι παραγγελίες με «Άρνηση παραλαβής» γίνονται «Ακυρωμένες»)"
+
+#: admin/admin-settings.php:483
+msgid "Pick at least one way to recognise customers and one payment method to hide."
+msgstr "Επιλέξτε τουλάχιστον έναν τρόπο αναγνώρισης πελατών και έναν τρόπο πληρωμής για απόκρυψη."
+
+#: admin/admin-users-meta.php:38
+msgid "Refusal history"
+msgstr "Ιστορικό αρνήσεων"
+
+#. translators: 1: refused orders, 2: completed orders, 3: rate
+#: admin/admin-users-meta.php:43
+#, php-format
+msgid "%1$d refused, %2$d completed (%3$s%% refusal rate)"
+msgstr "%1$d αρνήσεις, %2$d ολοκληρωμένες (ποσοστό αρνήσεων %3$s%%)"
+
+#: admin/admin-users-meta.php:55
+msgid "Exception"
+msgstr "Εξαίρεση"
+
+#: admin/admin-users-meta.php:59
+msgid "Automatic (based on history)"
+msgstr "Αυτόματα (βάσει ιστορικού)"
+
+#: admin/admin-users-meta.php:60
+msgid "Always trust (never hide payment methods)"
+msgstr "Πάντα αξιόπιστος (δεν κρύβονται ποτέ τρόποι πληρωμής)"
+
+#: admin/admin-users-meta.php:61
+msgid "Always block (always hide the selected payment methods)"
+msgstr "Πάντα αποκλεισμός (κρύβονται πάντα οι επιλεγμένοι τρόποι πληρωμής)"
+
+#: cod-guard.php:123
+msgid "This plugin requires WooCommerce. Please install and activate WooCommerce first."
+msgstr "Αυτό το πρόσθετο απαιτεί το WooCommerce. Εγκαταστήστε και ενεργοποιήστε πρώτα το WooCommerce."
+
+#: cod-guard.php:171
+msgid "COD Guard requires WooCommerce to be installed and active."
+msgstr "Το COD Guard απαιτεί εγκατεστημένο και ενεργό το WooCommerce."
+
+#. translators: %d: months
+#: includes/class-drpm-privacy.php:32
+#, php-format
+msgid "the last %d months"
+msgstr "τους τελευταίους %d μήνες"
+
+#: includes/class-drpm-privacy.php:33
+msgid "the full order history"
+msgstr "ολόκληρο το ιστορικό παραγγελιών"
+
+#: includes/class-drpm-privacy.php:35
+msgid "This sample text explains the delivery refusal checks. Adjust it to your store and legal basis; it is not legal advice."
+msgstr "Αυτό το ενδεικτικό κείμενο εξηγεί τους ελέγχους αρνήσεων παραλαβής. Προσαρμόστε το στο κατάστημά σας και στη νομική σας βάση· δεν αποτελεί νομική συμβουλή."
+
+#: includes/class-drpm-privacy.php:36
+msgid "Suggested text:"
+msgstr "Προτεινόμενο κείμενο:"
+
+#. translators: %s: retention window
+#: includes/class-drpm-privacy.php:39
+#, php-format
+msgid "To prevent losses from parcels that are refused on delivery, we check whether previous orders placed with the same contact or delivery details were refused, looking at %s. If the number or share of refused deliveries exceeds a limit, some payment methods (such as cash on delivery) may not be offered; you can still order using the other payment methods. We process this information on the basis of our legitimate interest in preventing fraud and non-payment (Article 6(1)(f) GDPR). Your details are stored only as irreversible keyed fingerprints (hashes) and are not shared with third parties. You can object to this processing, or ask us to review a restriction, by contacting us."
+msgstr "Για να αποφεύγουμε απώλειες από δέματα που δεν παραλαμβάνονται, ελέγχουμε αν προηγούμενες παραγγελίες με τα ίδια στοιχεία επικοινωνίας ή παράδοσης δεν παραλήφθηκαν, εξετάζοντας %s. Αν ο αριθμός ή το ποσοστό των αρνήσεων παραλαβής ξεπερνά ένα όριο, ορισμένοι τρόποι πληρωμής (όπως η αντικαταβολή) μπορεί να μην είναι διαθέσιμοι· μπορείτε πάντα να παραγγείλετε με τους υπόλοιπους τρόπους πληρωμής. Επεξεργαζόμαστε αυτές τις πληροφορίες βάσει του έννομου συμφέροντός μας για την πρόληψη της απάτης και της μη πληρωμής (άρθρο 6 παρ. 1 στοιχ. στ΄ ΓΚΠΔ). Τα στοιχεία σας αποθηκεύονται μόνο ως μη αναστρέψιμα κρυπτογραφικά αποτυπώματα (hashes) με κλειδί και δεν κοινοποιούνται σε τρίτους. Μπορείτε να αντιταχθείτε σε αυτή την επεξεργασία ή να ζητήσετε επανεξέταση ενός περιορισμού επικοινωνώντας μαζί μας."
+
+#: includes/class-drpm-privacy.php:50
+#: includes/class-drpm-privacy.php:60
+#: includes/class-drpm-privacy.php:79
+msgid "Delivery refusal history"
+msgstr "Ιστορικό αρνήσεων παραλαβής"
+
+#: includes/class-drpm-privacy.php:82
+msgid "Order"
+msgstr "Παραγγελία"
+
+#: includes/class-drpm-privacy.php:84
+msgid "Date"
+msgstr "Ημερομηνία"
+
+#: includes/class-drpm-privacy.php:93
+msgid "Payment method restriction"
+msgstr "Περιορισμός τρόπων πληρωμής"
+
+#: includes/class-drpm-privacy.php:96
+msgid "Refused deliveries counted"
+msgstr "Αρνήσεις παραλαβής που μετρήθηκαν"
+
+#: includes/class-drpm-privacy.php:97
+msgid "Completed deliveries counted"
+msgstr "Ολοκληρωμένες παραδόσεις που μετρήθηκαν"
+
+#: includes/class-drpm-privacy.php:98
+msgid "Payment methods currently restricted"
+msgstr "Τρόποι πληρωμής σε περιορισμό αυτή τη στιγμή"
+
+#: includes/class-drpm-privacy.php:98
+#: includes/class-drpm-privacy.php:100
+#: includes/class-drpm-privacy.php:101
+msgid "Yes"
+msgstr "Ναι"
+
+#: includes/class-drpm-privacy.php:98
+#: includes/class-drpm-privacy.php:100
+#: includes/class-drpm-privacy.php:101
+msgid "No"
+msgstr "Όχι"
+
+#: includes/class-drpm-privacy.php:99
+msgid "Exception on customer profile"
+msgstr "Εξαίρεση στο προφίλ πελάτη"
+
+#: includes/class-drpm-privacy.php:99
+msgid "None"
+msgstr "Καμία"
+
+#: includes/class-drpm-privacy.php:100
+msgid "On the \"Always block\" list"
+msgstr "Στη λίστα «Πάντα αποκλεισμός»"
+
+#: includes/class-drpm-privacy.php:101
+msgid "On the \"Always trust\" list"
+msgstr "Στη λίστα «Πάντα αξιόπιστος»"
+
+#: includes/class-drpm-privacy.php:127
+msgid "Delivery refusal history was retained for fraud prevention, in line with the store's order data retention settings."
+msgstr "Το ιστορικό αρνήσεων παραλαβής διατηρήθηκε για την πρόληψη απάτης, σύμφωνα με τις ρυθμίσεις διατήρησης δεδομένων παραγγελιών του καταστήματος."
+
+#: includes/class-drpm-risk.php:273
+msgid "Email"
+msgstr "Email"
+
+#: includes/class-drpm-risk.php:274
+msgid "Phone number"
+msgstr "Αριθμός τηλεφώνου"
+
+#: includes/class-drpm-risk.php:275
+msgid "Shipping address"
+msgstr "Διεύθυνση αποστολής"
+
+#: includes/class-drpm-risk.php:276
+msgid "Billing address"
+msgstr "Διεύθυνση χρέωσης"
+
+#: includes/class-drpm-risk.php:277
+msgid "Full name"
+msgstr "Ονοματεπώνυμο"
+
+#: includes/class-drpm-stats.php:181
+msgid "None / manual"
+msgstr "Κανένας / χειροκίνητα"
+
+#: includes/class-drpm-stats.php:250
+#, php-format
+msgid "Product #%d"
+msgstr "Προϊόν #%d"
+
+#: includes/class-drpm-stats.php:289
+msgid "Guest"
+msgstr "Επισκέπτης"
+
+#: includes/hide-payment-gateway.php:22
+msgid "Some payment methods aren't available for this order. Please choose one of the options below, or contact us if you think this is a mistake."
+msgstr "Ορισμένοι τρόποι πληρωμής δεν είναι διαθέσιμοι για αυτή την παραγγελία. Επιλέξτε έναν από τους παρακάτω τρόπους ή επικοινωνήστε μαζί μας αν πιστεύετε ότι πρόκειται για λάθος."
+
+#: includes/order-status.php:42
+#: includes/order-status.php:63
+#: includes/order-status.php:67
+msgctxt "Order status"
+msgid "Delivery refused"
+msgstr "Άρνηση παραλαβής"
+
+#. translators: %s: number of orders
+#: includes/order-status.php:48
+#, php-format
+msgid "Delivery refused <span class=\"count\">(%s)</span>"
+msgid_plural "Delivery refused <span class=\"count\">(%s)</span>"
+msgstr[0] "Άρνηση παραλαβής <span class=\"count\">(%s)</span>"
+msgstr[1] "Άρνηση παραλαβής <span class=\"count\">(%s)</span>"
+
+#: includes/order-status.php:75
+msgid "Change status to delivery refused"
+msgstr "Αλλαγή κατάστασης σε «Άρνηση παραλαβής»"
+
+#: includes/order-status.php:93
+msgid "Order status changed by bulk edit:"
+msgstr "Η κατάσταση παραγγελίας άλλαξε με μαζική επεξεργασία:"
+
+#. translators: %d: number of orders
+#: includes/order-status.php:117
+#, php-format
+msgid "%d order marked as delivery refused."
+msgid_plural "%d orders marked as delivery refused."
+msgstr[0] "%d παραγγελία σημειώθηκε ως «Άρνηση παραλαβής»."
+msgstr[1] "%d παραγγελίες σημειώθηκαν ως «Άρνηση παραλαβής»."
+
+#: includes/order-status.php:134
+msgid "Delivery refused"
+msgstr "Άρνηση παραλαβής"
+
+#. translators: 1: number of refused orders, 2: months
+#: includes/order-status.php:166
+#, php-format
+msgid "Delivery refused. This customer has refused %1$d order in the last %2$d months."
+msgid_plural "Delivery refused. This customer has refused %1$d orders in the last %2$d months."
+msgstr[0] "Άρνηση παραλαβής. Ο πελάτης έχει αρνηθεί %1$d παραγγελία τους τελευταίους %2$d μήνες."
+msgstr[1] "Άρνηση παραλαβής. Ο πελάτης έχει αρνηθεί %1$d παραγγελίες τους τελευταίους %2$d μήνες."
+
+#. translators: %d: number of refused orders
+#: includes/order-status.php:172
+#, php-format
+msgid "Delivery refused. This customer has refused %d order in total."
+msgid_plural "Delivery refused. This customer has refused %d orders in total."
+msgstr[0] "Άρνηση παραλαβής. Ο πελάτης έχει αρνηθεί %d παραγγελία συνολικά."
+msgstr[1] "Άρνηση παραλαβής. Ο πελάτης έχει αρνηθεί %d παραγγελίες συνολικά."
+
+#: includes/order-status.php:176
+msgid "COD Guard will hide the selected payment methods on their next order."
+msgstr "Το COD Guard θα κρύψει τους επιλεγμένους τρόπους πληρωμής στην επόμενη παραγγελία του."
+
+#: includes/order-status.php:177
+msgid "They are still below the restriction rule."
+msgstr "Βρίσκεται ακόμη κάτω από το όριο του κανόνα περιορισμού."
