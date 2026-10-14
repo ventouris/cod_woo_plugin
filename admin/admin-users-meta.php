@@ -1,39 +1,65 @@
 <?php
-if ( ! class_exists( 'SDCOD_UserMeta' ) ) {
-// [--] Task: Add delivery risk score section to user profiles in the WordPress admin.
-// Class: SDCOD_UserMeta
-//   - Function: add_user_profile_fields() - Adds fields to the user profile for displaying and managing the user's risk score.
-//   - Function: save_user_profile_fields() - Handles saving any changes made to the risk score from the user profile.
-    class SDCOD_UserMeta {
+if (!defined('ABSPATH')) {
+    exit;
+}
 
-        public function __construct() {
-            add_action( 'show_user_profile', array( $this, 'add_user_profile_fields' ) );
-            add_action( 'edit_user_profile', array( $this, 'add_user_profile_fields' ) );
+if (!class_exists('DRPM_UserMeta')) {
+    /**
+     * User profile section: refusal history and a manual override (always allow / always restrict).
+     */
+    class DRPM_UserMeta
+    {
+        public function __construct()
+        {
+            add_action('show_user_profile', array($this, 'add_user_profile_fields'));
+            add_action('edit_user_profile', array($this, 'add_user_profile_fields'));
 
-            add_action( 'personal_options_update', array( $this, 'save_user_profile_fields' ) );
-            add_action( 'edit_user_profile_update', array( $this, 'save_user_profile_fields' ) );
+            add_action('personal_options_update', array($this, 'save_user_profile_fields'));
+            add_action('edit_user_profile_update', array($this, 'save_user_profile_fields'));
         }
 
         /**
-         * Adds custom fields to the user profile page in the admin.
+         * Adds the delivery refusal section to the user profile page in the admin.
          *
-         * @param WP_User $user The current WP_User object.
+         * @param WP_User $user The user being edited.
          */
-        public function add_user_profile_fields( $user ) {
-            // Check if the current user has permission to edit this data
-            if ( ! current_user_can( 'manage_woocommerce', $user->ID ) ) {
+        public function add_user_profile_fields($user)
+        {
+            if (!current_user_can('manage_woocommerce')) {
                 return;
             }
 
+            $override = get_user_meta($user->ID, DRPM_Risk::USER_OVERRIDE_META, true);
+            $risk = $this->evaluateUser($user);
             ?>
-            <h3><?php _e("SafeDeliveryCOD Delivery Risk Score", "safedeliverycod"); ?></h3>
-
-            <table class="form-table">
+            <h2 id="drpm-override"><?php esc_html_e('Delivery Refusal', DRPM_TEXT_DOMAIN); ?></h2>
+            <table class="form-table" role="presentation">
                 <tr>
-                    <th><label for="safedeliverycod-risk-score"><?php _e("Delivery Risk Score", "safedeliverycod"); ?></label></th>
+                    <th><?php esc_html_e('Refusal history', DRPM_TEXT_DOMAIN); ?></th>
                     <td>
-                        <input type="text" name="safedeliverycod_risk_score" id="safedeliverycod-risk-score" value="<?php echo esc_attr( get_user_meta( $user->ID, 'safedeliverycod_risk_score', true ) ); ?>" class="regular-text" /><br />
-                        <span class="description"><?php _e("Edit the user's delivery risk score.", "safedeliverycod"); ?></span>
+                        <?php
+                        echo esc_html(sprintf(
+                            /* translators: 1: refused orders, 2: completed orders, 3: rate */
+                            __('%1$d refused, %2$d completed (%3$s%% refusal rate)', DRPM_TEXT_DOMAIN),
+                            $risk['refused'],
+                            $risk['delivered'],
+                            number_format_i18n($risk['rate'], 1)
+                        ));
+                        if ($risk['at_risk']) {
+                            echo ' <span class="drpm-badge drpm-badge--risk">' . esc_html__('Restricted', DRPM_TEXT_DOMAIN) . '</span>';
+                        }
+                        ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="drpm-override-select"><?php esc_html_e('Payment restriction', DRPM_TEXT_DOMAIN); ?></label></th>
+                    <td>
+                        <?php wp_nonce_field('drpm_save_override', 'drpm_override_nonce'); ?>
+                        <select name="drpm_override" id="drpm-override-select">
+                            <option value="" <?php selected($override, ''); ?>><?php esc_html_e('Automatic (based on history)', DRPM_TEXT_DOMAIN); ?></option>
+                            <option value="allow" <?php selected($override, 'allow'); ?>><?php esc_html_e('Always allow all payment methods', DRPM_TEXT_DOMAIN); ?></option>
+                            <option value="restrict" <?php selected($override, 'restrict'); ?>><?php esc_html_e('Always hide restricted payment methods', DRPM_TEXT_DOMAIN); ?></option>
+                        </select>
                     </td>
                 </tr>
             </table>
@@ -41,22 +67,34 @@ if ( ! class_exists( 'SDCOD_UserMeta' ) ) {
         }
 
         /**
-         * Saves the custom fields added to the user profile page in the admin.
+         * Saves the override.
          *
-         * @param int $user_id ID of the current user.
+         * @param int $user_id ID of the user being saved.
          */
-        public function save_user_profile_fields( $user_id ) {
-            // Verify the request to prevent CSRF attacks
-            if ( ! current_user_can( 'edit_user', $user_id ) ) {
-                return false;
+        public function save_user_profile_fields($user_id)
+        {
+            if (!current_user_can('manage_woocommerce') || !current_user_can('edit_user', $user_id)) {
+                return;
+            }
+            if (!isset($_POST['drpm_override_nonce']) || !wp_verify_nonce(sanitize_key($_POST['drpm_override_nonce']), 'drpm_save_override')) {
+                return;
             }
 
-            // Update the risk score in the user meta
-            if ( isset( $_POST['safedeliverycod_risk_score'] ) ) {
-                update_user_meta( $user_id, 'safedeliverycod_risk_score', sanitize_text_field( $_POST['safedeliverycod_risk_score'] ) );
+            $value = isset($_POST['drpm_override']) ? sanitize_key($_POST['drpm_override']) : '';
+            if (in_array($value, array('allow', 'restrict'), true)) {
+                update_user_meta($user_id, DRPM_Risk::USER_OVERRIDE_META, $value);
+            } else {
+                delete_user_meta($user_id, DRPM_Risk::USER_OVERRIDE_META);
             }
+        }
+
+        private function evaluateUser($user)
+        {
+            $customer = new WC_Customer($user->ID);
+
+            return DRPM_Risk::evaluateCustomer($customer);
         }
     }
 
-    new SDCOD_UserMeta();
+    new DRPM_UserMeta();
 }
