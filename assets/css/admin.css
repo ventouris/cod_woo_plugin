@@ -1,15 +1,106 @@
 #checkbox_warning {
 	display: none;
-	color: red;
+	color: #d63638;
 	font-weight: bold;
 }
 
-.drpm_payment_method_hidden_class {
-    background-color: #ffe4e8;
+/* Orders placed with restricted payment methods */
+.drpm_payment_method_hidden_class,
+.drpm_payment_method_hidden_class td,
+.drpm_payment_method_hidden_class th {
+	background-color: #ffe4e8;
 }
+
+/* Order status badge */
+.order-status.status-refused-delivery {
+	background: #f8d7da;
+	color: #8a1f2a;
+}
+
+/* Quick action button in the orders list */
+.wc-action-button-drpm-refused::after {
+	content: "\f158";
+	font-family: dashicons;
+}
+
+/* Badges */
+.drpm-badge {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 10px;
+	font-size: 12px;
+	line-height: 1.6;
+	white-space: nowrap;
+}
+.drpm-badge--risk {
+	background: #d63638;
+	color: #fff;
+}
+.drpm-badge--warn {
+	background: #fcf0d0;
+	color: #7a5a00;
+}
+.drpm-badge--ok {
+	background: #e7f5ea;
+	color: #1e6b33;
+}
+.drpm-muted {
+	color: #a7aaad;
+}
+.column-drpm_risk {
+	width: 110px;
+}
+
+/* Order meta box */
+.drpm-metabox__stats {
+	margin: 0 0 8px;
+}
+.drpm-metabox__stats li {
+	display: flex;
+	justify-content: space-between;
+	margin: 0 0 4px;
+}
+.drpm-metabox__flag {
+	padding: 6px 8px;
+	background: #ffe4e8;
+	border-left: 3px solid #d63638;
+}
+
+/* Settings overview */
+.drpm-overview-cell {
+	padding-left: 0;
+}
+.drpm-overview {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin-bottom: 8px;
+}
+.drpm-stat {
+	display: flex;
+	flex-direction: column;
+	min-width: 160px;
+	padding: 12px 16px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+}
+.drpm-stat__value {
+	font-size: 24px;
+	font-weight: 600;
+	line-height: 1.3;
+}
+.drpm-stat__label {
+	color: #646970;
+}
+.drpm-rebuild {
+	margin-left: 8px !important;
+	vertical-align: middle;
+}
+
 /*Settings page start*/
 tr ul:has(.threshold_type) {
-    display: flex;
-    gap: 20px;
+	display: flex;
+	gap: 20px;
 }
 /*Settings page stop*/
