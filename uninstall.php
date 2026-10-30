@@ -10,7 +10,7 @@ if (!defined('WP_UNINSTALL_PLUGIN')) {
     exit;
 }
 
-if ('yes' !== get_option('delete_all_data_after_plugin_deletion')) {
+if ('yes' !== get_option('drpm_delete_data_on_uninstall')) {
     return;
 }
 
@@ -20,7 +20,7 @@ global $wpdb;
 if (function_exists('wc_get_orders')) {
     // Our plugin is no longer loaded, so make WooCommerce aware of the status again.
     add_filter('wc_order_statuses', function ($statuses) {
-        $statuses['wc-refused-delivery'] = 'Refused delivery';
+        $statuses['wc-refused-delivery'] = 'Delivery refused';
         return $statuses;
     });
 
@@ -31,7 +31,7 @@ if (function_exists('wc_get_orders')) {
             'limit'  => 100,
         ));
         foreach ($orders as $order) {
-            $order->update_status('cancelled', 'Delivery Refusal & Payment Manager was removed: status changed from Refused delivery.');
+            $order->update_status('cancelled', 'COD Guard was removed: status changed from Delivery refused.');
         }
     } while (count($orders) === 100);
 }
@@ -39,28 +39,31 @@ if (function_exists('wc_get_orders')) {
 // Options.
 $options = array(
     'drpm_enabled',
-    'customer_data_fields_email',
-    'customer_data_fields_email_mobile',
-    'customer_data_fields_email_shipping_address',
-    'customer_data_fields_email_billing_address',
-    'customer_data_fields_email_full_name',
-    'threshold_type',
-    'threshold_value',
+    'drpm_match_email',
+    'drpm_match_phone',
+    'drpm_match_shipping_address',
+    'drpm_match_billing_address',
+    'drpm_match_full_name',
+    'drpm_threshold_type',
+    'drpm_threshold_value',
     'drpm_min_orders',
-    'number_of_months',
+    'drpm_lookback_months',
+    'drpm_options_version',
     'drpm_customer_notice',
     'drpm_blocked_list',
     'drpm_trusted_list',
     'drpm_restock_on_refusal',
+    'drpm_refusal_cost',
     'drpm_db_version',
+    'drpm_key_fingerprint',
     'drpm_needs_backfill',
     'drpm_backfill_state',
-    'delete_all_data_after_plugin_deletion',
+    'drpm_delete_data_on_uninstall',
 );
 foreach ($options as $option) {
     delete_option($option);
 }
-$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE 'dprm\\_payment\\_method\\_%'");
+$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE 'drpm\\_hide\\_gateway\\_%'");
 
 // User and order meta.
 $wpdb->query("DELETE FROM {$wpdb->usermeta} WHERE meta_key IN ('_drpm_override', 'safedeliverycod_risk_score')");

@@ -32,33 +32,33 @@ if (!class_exists('DRPM_UserMeta')) {
             $override = get_user_meta($user->ID, DRPM_Risk::USER_OVERRIDE_META, true);
             $risk = $this->evaluateUser($user);
             ?>
-            <h2 id="drpm-override"><?php esc_html_e('Delivery Refusal', DRPM_TEXT_DOMAIN); ?></h2>
+            <h2 id="drpm-override"><?php esc_html_e('COD Guard', 'cod-guard'); ?></h2>
             <table class="form-table" role="presentation">
                 <tr>
-                    <th><?php esc_html_e('Refusal history', DRPM_TEXT_DOMAIN); ?></th>
+                    <th><?php esc_html_e('Refusal history', 'cod-guard'); ?></th>
                     <td>
                         <?php
                         echo esc_html(sprintf(
                             /* translators: 1: refused orders, 2: completed orders, 3: rate */
-                            __('%1$d refused, %2$d completed (%3$s%% refusal rate)', DRPM_TEXT_DOMAIN),
+                            __('%1$d refused, %2$d completed (%3$s%% refusal rate)', 'cod-guard'),
                             $risk['refused'],
                             $risk['delivered'],
                             number_format_i18n($risk['rate'], 1)
                         ));
                         if ($risk['at_risk']) {
-                            echo ' <span class="drpm-badge drpm-badge--risk">' . esc_html__('Restricted', DRPM_TEXT_DOMAIN) . '</span>';
+                            echo ' <span class="drpm-badge drpm-badge--risk">' . esc_html__('Methods hidden', 'cod-guard') . '</span>';
                         }
                         ?>
                     </td>
                 </tr>
                 <tr>
-                    <th><label for="drpm-override-select"><?php esc_html_e('Payment restriction', DRPM_TEXT_DOMAIN); ?></label></th>
+                    <th><label for="drpm-override-select"><?php esc_html_e('Exception', 'cod-guard'); ?></label></th>
                     <td>
                         <?php wp_nonce_field('drpm_save_override', 'drpm_override_nonce'); ?>
                         <select name="drpm_override" id="drpm-override-select">
-                            <option value="" <?php selected($override, ''); ?>><?php esc_html_e('Automatic (based on history)', DRPM_TEXT_DOMAIN); ?></option>
-                            <option value="allow" <?php selected($override, 'allow'); ?>><?php esc_html_e('Always allow all payment methods', DRPM_TEXT_DOMAIN); ?></option>
-                            <option value="restrict" <?php selected($override, 'restrict'); ?>><?php esc_html_e('Always hide restricted payment methods', DRPM_TEXT_DOMAIN); ?></option>
+                            <option value="" <?php selected($override, ''); ?>><?php esc_html_e('Automatic (based on history)', 'cod-guard'); ?></option>
+                            <option value="allow" <?php selected($override, 'allow'); ?>><?php esc_html_e('Always trust (never hide payment methods)', 'cod-guard'); ?></option>
+                            <option value="restrict" <?php selected($override, 'restrict'); ?>><?php esc_html_e('Always block (always hide the selected payment methods)', 'cod-guard'); ?></option>
                         </select>
                     </td>
                 </tr>

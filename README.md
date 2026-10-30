@@ -1,48 +1,67 @@
-# WooCommerce Delivery Refusal & Payment Manager
+# COD Guard for WooCommerce
 
-Stops customers who keep refusing Cash on Delivery parcels from choosing COD (or any payment method you pick) again.
+Stop losing money on refused cash-on-delivery parcels. COD Guard tracks refused deliveries, recognises customers who keep refusing, and hides cash on delivery (or any payment method you choose) from them at checkout.
 
 ## How it works
 
-1. When a parcel comes back, set the order to **Refused delivery**. You can do this from the order's status dropdown, with the bulk action, or with the one-click button in the orders list.
-2. The plugin keeps a small index of hashed customer identifiers for every order: email, phone, shipping address, billing address and full name. Values are normalized, so `John.Doe+shop@Gmail.com` matches `johndoe@gmail.com` and `+30 690 000 0001` matches `6900000001`.
-3. At checkout, the customer's past orders inside the retention window are looked up by **any** of the enabled identifiers (and by their account, if they're logged in). If they reach the threshold, the selected payment methods are hidden.
-4. WooCommerce re-checks the chosen method against the available ones when the order is placed, so a restricted method can't be forced through by editing the form.
+1. When a parcel comes back, mark the order **Delivery refused**. You can use the order's status dropdown, the bulk action, or the one-click button in the orders list.
+2. COD Guard keeps a small index of hashed customer details for every order: email, phone, shipping address, billing address and full name. Values are normalized, so `John.Doe+shop@Gmail.com` matches `johndoe@gmail.com` and `+30 690 000 0001` matches `6900000001`.
+3. At checkout, the customer's past orders in the look-back period are found by **any** of the details you selected (and by their account, if they're logged in). If they meet your restriction rule, the selected payment methods are hidden.
+4. WooCommerce re-checks the chosen method against the available ones when the order is placed, so a hidden method can't be forced through by editing the form.
 
 Supported: classic (shortcode) checkout, Checkout block (Store API), "Pay for order" page, HPOS and legacy order storage.
 
+## Dashboard
+
+*WooCommerce → COD Guard → Dashboard*, with date ranges of 30 days, 90 days, 12 months or all time.
+
+- **Headline figures:**
+  - refusal rate (with the change vs the previous period)
+  - number of refused deliveries
+  - cost of refusals (refusals × your cost per refused parcel)
+  - order value refused
+  - checkouts with methods hidden, and how many of them completed with another payment method
+- **Trends:** refused deliveries and refusal rate per day, week or month. Hover or focus a period for details; each chart has a data table.
+- **Breakdowns:** refusal rate by payment method, the regions with the most refusals, and the most refused products (needs WooCommerce Analytics).
+- **Repeat refusers:** customers who refused two or more orders, with their current status and a link to their latest order.
+
 ## Settings
 
-*WooCommerce → Settings → Delivery Refusal*
+*WooCommerce → COD Guard → Settings*
 
-| Setting | Description |
+| Section | Settings |
 | --- | --- |
-| Overview | Refusal stats, number of orders placed with restrictions applied, index status and a **Rebuild order index** button |
-| Enable restriction | Master switch |
-| Customer Data Fields | Which identifiers to match on |
-| Threshold Type / Value | *Number*: restrict after N refusals. *Percentage*: restrict when refused ÷ (refused + completed) ≥ N%. Set the value to 0 to turn off automatic restriction |
-| Minimum orders (percentage) | Customers need at least this many delivered + refused orders before the percentage rule applies to them |
-| Payment Methods | Methods to hide. Hiding never leaves a customer with no payment method at all |
-| Message to customer | Optional notice shown in the classic checkout when methods are hidden |
-| Always restrict / Always allow | Lists of emails or phone numbers that override the automatic rule |
-| Number of Months | Retention window (0 = all time) |
-| Restock refused orders | Put the items back in stock when an order is marked refused |
-| When plugin is deleted | Remove all data and convert refused orders to Cancelled |
+| General | **Protect checkout** (master switch) |
+| Recognise returning customers by | Email, phone number, shipping address, billing address, full name |
+| When to restrict | **Restriction rule:** "Restrict when a customer has refused [2] [or more orders / % or more of their orders]". For the percentage rule, you can require a minimum number of completed + refused orders first. 0 turns automatic restriction off. **Look-back period** in months (0 = all time) |
+| Hide these payment methods | The methods to hide, and the **Checkout message**. Hiding never leaves a customer with no way to pay |
+| Exceptions | **Always block** / **Always trust** lists of emails or phone numbers |
+| Refused orders | **Cost per refused parcel** (for the dashboard), **Restock** refused items |
+| Advanced | Order index status and rebuild button, **Uninstall** data removal |
 
-You can also override individual registered customers from their user profile: **Automatic**, **Always allow** or **Always restrict**.
+You can also set an exception for individual registered customers on their user profile: **Automatic**, **Always trust** or **Always block**.
 
-## Admin tools
+## On the order screens
 
-- **Delivery risk** column in the orders list (e.g. `2 / 5 refused`).
-- Orders placed with restricted methods are highlighted in the list.
-- A **Delivery refusal risk** box on the order screen shows the verdict, refusal rate and links to the refused orders.
+- A **Delivery risk** column in the orders list (e.g. `2 / 5 refused`).
+- Orders placed while payment methods were hidden are highlighted in the list.
+- A **COD Guard** box on the order screen shows the verdict (*High risk · methods hidden*, *Watch · 1 refusal*, *No refusal history*), the refusal rate and links to the refused orders.
 - An automatic order note is added on refusal, with the customer's updated history.
+
+## Privacy & GDPR
+
+- **Keyed hashes only.** Customer details are stored as HMAC-SHA256 hashes. The key is `DRPM_HASH_KEY`, if you define it in `wp-config.php` (recommended), and otherwise WordPress's `AUTH` salt. Neither is kept in the database, so a database dump alone can't be brute-forced back to emails or phone numbers. If the key changes, the index is wiped and rebuilt automatically.
+- **Privacy policy text.** Suggested wording (legitimate interest, Art. 6(1)(f)) appears under *Settings → Privacy → Policy Guide*. Adapt it to your store.
+- **Checkout message.** A neutral default message tells customers that some payment methods aren't available and how to contact you.
+- **Export personal data** (*Tools → Export Personal Data*) includes the orders used for risk checks, the current verdict, any exception set on the profile, and membership of the exception lists.
+- **Erase personal data** follows WooCommerce's *"Remove personal data from orders on request"* setting. When that setting is on, the person's index rows, profile exception and list entries are removed. When it's off, they are kept for fraud prevention (like the orders themselves), and the request says the data was retained. You can change this with the `drpm_privacy_erase_data` filter.
+- **Anonymized orders** (from an erasure request or WooCommerce's retention policy) are removed from the index and their risk snapshot is deleted.
 
 ## WP-CLI
 
 ```bash
-wp drpm reindex          # rebuild the order index
-wp drpm check <order_id> # show the risk verdict for an order's customer
+wp cod-guard reindex          # rebuild the order index
+wp cod-guard check <order_id> # show the verdict for an order's customer
 ```
 
 ## Developer hooks
@@ -53,7 +72,32 @@ wp drpm check <order_id> # show the risk verdict for an order's customer
 | `drpm_restricted_gateways` (filter) | Change which gateway IDs are hidden |
 | `drpm_delivered_statuses` (filter) | Statuses that count as delivered for the percentage rule (default `completed`) |
 | `drpm_allow_empty_gateways` (filter) | Return `true` to allow hiding every payment method |
-| `delivery_refusal_payment_manager_settings` (filter) | Change the settings fields |
+| `drpm_privacy_erase_data` (filter) | Whether privacy erasure requests remove COD Guard data |
+| `drpm_settings` (filter) | Change the settings fields |
+
+## Updates
+
+New releases appear on the *Plugins* screen with the usual **Update now** link. WordPress checks about every 12 hours; *Dashboard → Updates → Check again* checks straight away.
+
+To publish a release:
+
+1. Set the new version in both the `Version:` header and `DRPM_VERSION` in `cod-guard.php`, then push.
+2. Publish a GitHub release from that commit, tagged `v` + the version (e.g. `v2.2.0`). The release notes become the changelog shown in WordPress.
+
+A GitHub Action then attaches `cod-guard.zip` and `update.json` to the release, and fails without attaching anything if the tag and versions don't match. Pre-releases and drafts are not offered to sites.
+
+Sites on 2.1.0 or older don't have the updater, so they need to install 2.2.0 by hand once.
+
+## Upgrading from 2.0 ("Delivery Refusal & Payment Manager")
+
+- The main plugin file was renamed to `cod-guard.php`, so WordPress deactivates the plugin once after the update. Reactivate it under *Plugins*.
+- Settings move to new option names automatically on first load, so nothing needs re-entering.
+- The admin page moved to *WooCommerce → COD Guard*, and old settings links redirect there.
+- The WP-CLI command changed from `wp drpm` to `wp cod-guard`, and the settings filter from `delivery_refusal_payment_manager_settings` to `drpm_settings`.
+
+## Translations
+
+Greek (`el`) is included. Strings use the `cod-guard` text domain.
 
 ## Requirements
 

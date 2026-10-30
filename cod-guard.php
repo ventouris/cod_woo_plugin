@@ -1,10 +1,14 @@
 <?php
 /**
- * Plugin Name: WooCommerce Delivery Refusal & Payment Manager
- * Description: Mitigates the impact of delivery refusals by tracking refused deliveries and automatically hiding risky payment methods (e.g. Cash on Delivery) from customers with a history of refusing orders.
- * Version: 2.0.0
- * Author: Your Name
- * Text Domain: delivery_refusal_payment_manager
+ * Plugin Name: COD Guard for WooCommerce
+ * Plugin URI: https://github.com/ventouris/cod_woo_plugin
+ * Update URI: https://github.com/ventouris/cod_woo_plugin
+ * Description: Stop losing money on refused cash-on-delivery parcels. Tracks refused deliveries, recognises repeat refusers and hides cash on delivery (or any payment method you choose) from them at checkout.
+ * Version: 2.2.0
+ * Author: Tasos Ventouris
+ * Author URI: https://github.com/ventouris
+ * License: GPL-2.0-or-later
+ * Text Domain: cod-guard
  * Domain Path: /languages
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -18,13 +22,11 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('DRPM_VERSION', '2.0.0');
-define('DRPM_PLUGIN_NAME', 'WooCommerce Delivery Refusal & Payment Manager');
-define('DRPM_PLUGIN_SHORT_NAME', 'DRPM');
+define('DRPM_VERSION', '2.2.0');
+define('DRPM_PLUGIN_NAME', 'COD Guard for WooCommerce');
 define('DRPM_PLUGIN_FILE', __FILE__);
 define('DRPM_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('DRPM_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('DRPM_TEXT_DOMAIN', 'delivery_refusal_payment_manager');
 
 /**
  * Initializes the plugin by setting up localization, loading dependencies,
@@ -51,12 +53,16 @@ class DeliveryRefusalPaymentManager
     {
         $this->setLocale();
 
+        // Updates are offered even while WooCommerce is inactive.
+        require_once DRPM_PLUGIN_DIR . 'includes/class-drpm-updater.php';
+
         if (!class_exists('WooCommerce')) {
             add_action('admin_notices', array($this, 'missingWooCommerceNotice'));
             return;
         }
 
         $this->loadDependencies();
+        DRPM_Risk::maybeMigrateOptions();
         DRPM_Index::maybeUpgrade();
 
         add_action('admin_enqueue_scripts', array($this, 'enqueueAdminStyles'));
@@ -84,11 +90,14 @@ class DeliveryRefusalPaymentManager
         require_once DRPM_PLUGIN_DIR . 'includes/class-drpm-risk.php';
         require_once DRPM_PLUGIN_DIR . 'includes/order-status.php';
         require_once DRPM_PLUGIN_DIR . 'includes/hide-payment-gateway.php';
+        require_once DRPM_PLUGIN_DIR . 'includes/class-drpm-privacy.php';
+        require_once DRPM_PLUGIN_DIR . 'includes/class-drpm-stats.php';
 
         if (is_admin()) {
             require_once DRPM_PLUGIN_DIR . 'admin/admin-settings.php';
             require_once DRPM_PLUGIN_DIR . 'admin/admin-order-meta.php';
             require_once DRPM_PLUGIN_DIR . 'admin/admin-users-meta.php';
+            require_once DRPM_PLUGIN_DIR . 'admin/admin-dashboard.php';
         }
 
         if (defined('WP_CLI') && WP_CLI) {
@@ -101,7 +110,7 @@ class DeliveryRefusalPaymentManager
      */
     private function setLocale()
     {
-        load_plugin_textdomain(DRPM_TEXT_DOMAIN, false, dirname(plugin_basename(DRPM_PLUGIN_FILE)) . '/languages/');
+        load_plugin_textdomain('cod-guard', false, dirname(plugin_basename(DRPM_PLUGIN_FILE)) . '/languages/');
     }
 
     /**
@@ -115,7 +124,7 @@ class DeliveryRefusalPaymentManager
         if (!class_exists('WooCommerce')) {
             deactivate_plugins(plugin_basename(DRPM_PLUGIN_FILE));
             wp_die(
-                esc_html__('This plugin requires WooCommerce. Please install and activate WooCommerce first.', DRPM_TEXT_DOMAIN),
+                esc_html__('This plugin requires WooCommerce. Please install and activate WooCommerce first.', 'cod-guard'),
                 '',
                 array('back_link' => true)
             );
@@ -142,7 +151,7 @@ class DeliveryRefusalPaymentManager
      */
     public function enqueueAdminStyles()
     {
-        wp_enqueue_style('delivery_refusal_payment_manager-admin-style', DRPM_PLUGIN_URL . 'assets/css/admin.css', array(), DRPM_VERSION, 'all');
+        wp_enqueue_style('cod-guard-admin', DRPM_PLUGIN_URL . 'assets/css/admin.css', array(), DRPM_VERSION . '.' . filemtime(DRPM_PLUGIN_DIR . 'assets/css/admin.css'), 'all');
     }
 
     /**
@@ -153,7 +162,7 @@ class DeliveryRefusalPaymentManager
      */
     public function addSettingsLink($links)
     {
-        $settingsLink = '<a href="' . esc_url(admin_url('admin.php?page=wc-settings&tab=delivery_refusal_payment_manager')) . '">' . esc_html__('Settings', DRPM_TEXT_DOMAIN) . '</a>';
+        $settingsLink = '<a href="' . esc_url(admin_url('admin.php?page=cod-guard&tab=settings')) . '">' . esc_html__('Settings', 'cod-guard') . '</a>';
         array_unshift($links, $settingsLink);
         return $links;
     }
@@ -163,7 +172,7 @@ class DeliveryRefusalPaymentManager
      */
     public function missingWooCommerceNotice()
     {
-        echo '<div class="notice notice-error"><p>' . esc_html__('WooCommerce Delivery Refusal & Payment Manager requires WooCommerce to be installed and active.', DRPM_TEXT_DOMAIN) . '</p></div>';
+        echo '<div class="notice notice-error"><p>' . esc_html__('COD Guard requires WooCommerce to be installed and active.', 'cod-guard') . '</p></div>';
     }
 
     /**

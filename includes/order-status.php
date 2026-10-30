@@ -5,7 +5,7 @@ if (!defined('ABSPATH')) {
 
 if (!class_exists('DRPM_Order_Status')) {
     /**
-     * Registers the "Refused delivery" order status and the admin tools to apply it.
+     * Registers the "Delivery refused" order status and the admin tools to apply it.
      */
     class DRPM_Order_Status
     {
@@ -39,13 +39,13 @@ if (!class_exists('DRPM_Order_Status')) {
         public static function registerPostStatus($statuses)
         {
             $statuses['wc-' . self::STATUS] = array(
-                'label'                     => _x('Refused delivery', 'Order status', DRPM_TEXT_DOMAIN),
+                'label'                     => _x('Delivery refused', 'Order status', 'cod-guard'),
                 'public'                    => false,
                 'exclude_from_search'       => false,
                 'show_in_admin_all_list'    => true,
                 'show_in_admin_status_list' => true,
                 /* translators: %s: number of orders */
-                'label_count'               => _n_noop('Refused delivery <span class="count">(%s)</span>', 'Refused delivery <span class="count">(%s)</span>', DRPM_TEXT_DOMAIN),
+                'label_count'               => _n_noop('Delivery refused <span class="count">(%s)</span>', 'Delivery refused <span class="count">(%s)</span>', 'cod-guard'),
             );
 
             return $statuses;
@@ -60,11 +60,11 @@ if (!class_exists('DRPM_Order_Status')) {
             foreach ($orderStatuses as $key => $label) {
                 $new[$key] = $label;
                 if ('wc-completed' === $key) {
-                    $new['wc-' . self::STATUS] = _x('Refused delivery', 'Order status', DRPM_TEXT_DOMAIN);
+                    $new['wc-' . self::STATUS] = _x('Delivery refused', 'Order status', 'cod-guard');
                 }
             }
             if (!isset($new['wc-' . self::STATUS])) {
-                $new['wc-' . self::STATUS] = _x('Refused delivery', 'Order status', DRPM_TEXT_DOMAIN);
+                $new['wc-' . self::STATUS] = _x('Delivery refused', 'Order status', 'cod-guard');
             }
 
             return $new;
@@ -72,7 +72,7 @@ if (!class_exists('DRPM_Order_Status')) {
 
         public static function registerBulkAction($bulkActions)
         {
-            $bulkActions[self::BULK_ACTION] = __('Change status to refused delivery', DRPM_TEXT_DOMAIN);
+            $bulkActions[self::BULK_ACTION] = __('Change status to delivery refused', 'cod-guard');
             return $bulkActions;
         }
 
@@ -90,7 +90,7 @@ if (!class_exists('DRPM_Order_Status')) {
             foreach ((array) $orderIds as $orderId) {
                 $order = wc_get_order($orderId);
                 if ($order && !$order->has_status(self::STATUS)) {
-                    $order->update_status(self::STATUS, __('Order status changed by bulk edit:', DRPM_TEXT_DOMAIN), true);
+                    $order->update_status(self::STATUS, __('Order status changed by bulk edit:', 'cod-guard'), true);
                     $changed++;
                 }
             }
@@ -114,7 +114,7 @@ if (!class_exists('DRPM_Order_Status')) {
                 '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
                 esc_html(sprintf(
                     /* translators: %d: number of orders */
-                    _n('%d order status changed to refused delivery.', '%d order statuses changed to refused delivery.', $changed, DRPM_TEXT_DOMAIN),
+                    _n('%d order marked as delivery refused.', '%d orders marked as delivery refused.', $changed, 'cod-guard'),
                     $changed
                 ))
             );
@@ -131,7 +131,7 @@ if (!class_exists('DRPM_Order_Status')) {
                         admin_url('admin-ajax.php?action=woocommerce_mark_order_status&status=' . self::STATUS . '&order_id=' . $order->get_id()),
                         'woocommerce-mark-order-status'
                     ),
-                    'name'   => __('Refused delivery', DRPM_TEXT_DOMAIN),
+                    'name'   => __('Delivery refused', 'cod-guard'),
                     'action' => 'drpm-refused',
                 );
             }
@@ -159,13 +159,24 @@ if (!class_exists('DRPM_Order_Status')) {
             DRPM_Risk::flushCache();
             $risk = DRPM_Risk::evaluateOrder($order, false);
 
-            $order->add_order_note(sprintf(
-                /* translators: 1: number of refused orders, 2: months, 3: yes/no */
-                __('Delivery refused. This customer has now refused %1$d order(s) in the last %2$d months. Restricted payment methods will be hidden for their next order: %3$s.', DRPM_TEXT_DOMAIN),
-                $risk['refused'],
-                DRPM_Risk::months(),
-                $risk['at_risk'] ? __('yes', DRPM_TEXT_DOMAIN) : __('no', DRPM_TEXT_DOMAIN)
-            ));
+            $months = DRPM_Risk::months();
+            $history = $months > 0
+                ? sprintf(
+                    /* translators: 1: number of refused orders, 2: months */
+                    _n('Delivery refused. This customer has refused %1$d order in the last %2$d months.', 'Delivery refused. This customer has refused %1$d orders in the last %2$d months.', $risk['refused'], 'cod-guard'),
+                    $risk['refused'],
+                    $months
+                )
+                : sprintf(
+                    /* translators: %d: number of refused orders */
+                    _n('Delivery refused. This customer has refused %d order in total.', 'Delivery refused. This customer has refused %d orders in total.', $risk['refused'], 'cod-guard'),
+                    $risk['refused']
+                );
+            $outcome = $risk['at_risk']
+                ? __('COD Guard will hide the selected payment methods on their next order.', 'cod-guard')
+                : __('They are still below the restriction rule.', 'cod-guard');
+
+            $order->add_order_note($history . ' ' . $outcome);
         }
     }
 

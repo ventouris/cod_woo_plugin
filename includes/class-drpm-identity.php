@@ -9,7 +9,9 @@ if (!class_exists('DRPM_Identity')) {
      * across orders even when they type their details slightly differently
      * (e.g. "+30 690-000 0000" vs "6900000000", "John.Doe+shop@gmail.com" vs "johndoe@gmail.com").
      *
-     * Only hashes are stored, never the raw personal data.
+     * Only keyed hashes (HMAC-SHA256) are stored, never the raw personal data. The key lives
+     * outside the database by default (DRPM_HASH_KEY or the AUTH salt from wp-config.php), so a
+     * database leak alone can't be used to reverse the hashes by brute force.
      */
     class DRPM_Identity
     {
@@ -17,11 +19,11 @@ if (!class_exists('DRPM_Identity')) {
          * Identifier keys, mapped to the settings checkbox that enables each of them.
          */
         const FIELDS = array(
-            'email'            => 'customer_data_fields_email',
-            'phone'            => 'customer_data_fields_email_mobile',
-            'shipping_address' => 'customer_data_fields_email_shipping_address',
-            'billing_address'  => 'customer_data_fields_email_billing_address',
-            'full_name'        => 'customer_data_fields_email_full_name',
+            'email'            => 'drpm_match_email',
+            'phone'            => 'drpm_match_phone',
+            'shipping_address' => 'drpm_match_shipping_address',
+            'billing_address'  => 'drpm_match_billing_address',
+            'full_name'        => 'drpm_match_full_name',
         );
 
         /**
@@ -197,9 +199,37 @@ if (!class_exists('DRPM_Identity')) {
             return preg_replace('/[^\p{L}\p{N}]+/u', '', $text);
         }
 
+        /**
+         * Hash of a single raw value, e.g. for privacy export/erasure lookups.
+         *
+         * @param string $field 'email' or 'phone'.
+         */
+        public static function hashValue($field, $value)
+        {
+            $normalized = 'phone' === $field ? self::normalizePhone($value) : self::normalizeEmail($value);
+            return self::hash($normalized);
+        }
+
+        /**
+         * Short fingerprint of the hashing key, used to detect key changes (which invalidate the index).
+         */
+        public static function keyFingerprint()
+        {
+            return substr(hash_hmac('sha256', 'drpm-key-fingerprint', self::key()), 0, 16);
+        }
+
+        private static function key()
+        {
+            if (defined('DRPM_HASH_KEY') && '' !== (string) DRPM_HASH_KEY) {
+                return (string) DRPM_HASH_KEY;
+            }
+
+            return wp_salt('auth');
+        }
+
         private static function hash($value)
         {
-            return '' === $value ? null : md5($value);
+            return '' === $value ? null : hash_hmac('sha256', $value, self::key());
         }
     }
 }

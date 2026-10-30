@@ -12,7 +12,7 @@ if (!class_exists('DRPM_Index')) {
      */
     class DRPM_Index
     {
-        const DB_VERSION = '1';
+        const DB_VERSION = '3';
         const BATCH_SIZE = 200;
 
         public static function tableName()
@@ -28,6 +28,8 @@ if (!class_exists('DRPM_Index')) {
             add_action('woocommerce_delete_order', array(__CLASS__, 'removeOrder'));
             add_action('woocommerce_trash_order', array(__CLASS__, 'removeOrder'));
             add_action('woocommerce_untrash_order', array(__CLASS__, 'indexOrder'));
+            // Anonymized orders (privacy erasure or retention policy) must leave the index.
+            add_action('woocommerce_privacy_remove_order_personal_data', array(__CLASS__, 'onOrderAnonymized'));
             // Legacy (posts) storage trash / delete.
             add_action('trashed_post', array(__CLASS__, 'onPostRemoved'));
             add_action('deleted_post', array(__CLASS__, 'onPostRemoved'));
@@ -57,12 +59,18 @@ if (!class_exists('DRPM_Index')) {
   customer_id bigint(20) unsigned NOT NULL DEFAULT 0,
   status varchar(40) NOT NULL DEFAULT '',
   date_created_gmt datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  email_hash char(32) DEFAULT NULL,
-  phone_hash char(32) DEFAULT NULL,
-  shipping_address_hash char(32) DEFAULT NULL,
-  billing_address_hash char(32) DEFAULT NULL,
-  full_name_hash char(32) DEFAULT NULL,
+  email_hash char(64) DEFAULT NULL,
+  phone_hash char(64) DEFAULT NULL,
+  shipping_address_hash char(64) DEFAULT NULL,
+  billing_address_hash char(64) DEFAULT NULL,
+  full_name_hash char(64) DEFAULT NULL,
+  payment_method varchar(100) NOT NULL DEFAULT '',
+  order_total decimal(19,4) NOT NULL DEFAULT 0,
+  shipping_country varchar(2) NOT NULL DEFAULT '',
+  shipping_state varchar(100) NOT NULL DEFAULT '',
+  restricted tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY  (order_id),
+  KEY date_status (date_created_gmt,status),
   KEY customer_id (customer_id),
   KEY email_hash (email_hash),
   KEY phone_hash (phone_hash),
@@ -81,10 +89,42 @@ if (!class_exists('DRPM_Index')) {
         {
             self::register();
 
-            if (get_option('drpm_db_version') !== self::DB_VERSION) {
+            $fingerprint = DRPM_Identity::keyFingerprint();
+            $keyChanged = get_option('drpm_key_fingerprint') !== $fingerprint;
+            if (get_option('drpm_db_version') !== self::DB_VERSION || $keyChanged) {
                 self::install();
+                if ($keyChanged) {
+                    // Hashes made with an older algorithm or key are useless (and, for 2.0's
+                    // unsalted MD5, reversible): wipe them and rebuild with the current key.
+                    self::truncate();
+                    update_option('drpm_key_fingerprint', $fingerprint, true);
+                }
                 update_option('drpm_needs_backfill', 'yes', false);
             }
+        }
+
+        public static function truncate()
+        {
+            global $wpdb;
+            $wpdb->query('TRUNCATE TABLE ' . self::tableName()); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        }
+
+        /**
+         * Drops the order from the index and removes the risk snapshot stored on it.
+         *
+         * @param WC_Order $order
+         */
+        public static function onOrderAnonymized($order)
+        {
+            if (!$order instanceof WC_Order) {
+                return;
+            }
+            // WooCommerce fires this after saving the anonymized order, so save our change ourselves.
+            if ($order->meta_exists('_drpm_risk_snapshot')) {
+                $order->delete_meta_data('_drpm_risk_snapshot');
+                $order->save();
+            }
+            self::removeOrder($order->get_id());
         }
 
         /**
@@ -118,13 +158,15 @@ if (!class_exists('DRPM_Index')) {
             if (!$order || 'shop_order' !== $order->get_type()) {
                 return;
             }
-            if ('trash' === $order->get_status()) {
+            if ('trash' === $order->get_status() || 'yes' === $order->get_meta('_anonymized')) {
                 self::removeOrder($order->get_id());
                 return;
             }
 
             $hashes = DRPM_Identity::fromOrder($order);
             $created = $order->get_date_created();
+            $country = $order->get_shipping_country() ?: $order->get_billing_country();
+            $state = $order->get_shipping_country() ? $order->get_shipping_state() : $order->get_billing_state();
 
             $wpdb->replace(
                 self::tableName(),
@@ -138,8 +180,13 @@ if (!class_exists('DRPM_Index')) {
                     'shipping_address_hash' => $hashes['shipping_address'],
                     'billing_address_hash'  => $hashes['billing_address'],
                     'full_name_hash'        => $hashes['full_name'],
+                    'payment_method'        => (string) $order->get_payment_method(),
+                    'order_total'           => (float) $order->get_total(),
+                    'shipping_country'      => (string) $country,
+                    'shipping_state'        => (string) $state,
+                    'restricted'            => 'yes' === $order->get_meta('_drpm_payment_method_hidden') ? 1 : 0,
                 ),
-                array('%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s')
+                array('%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%f', '%s', '%s', '%d')
             );
         }
 
@@ -216,32 +263,6 @@ if (!class_exists('DRPM_Index')) {
             }
 
             return $result;
-        }
-
-        /**
-         * Store-wide totals for the settings dashboard.
-         */
-        public static function storeStats($months = 0)
-        {
-            global $wpdb;
-
-            $sql = 'SELECT status, COUNT(*) AS total FROM ' . self::tableName();
-            $args = array();
-            if ($months > 0) {
-                $sql .= ' WHERE date_created_gmt >= %s';
-                $args[] = gmdate('Y-m-d H:i:s', strtotime("-{$months} months"));
-            }
-            $sql .= ' GROUP BY status';
-
-            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-            $rows = $wpdb->get_results($args ? $wpdb->prepare($sql, $args) : $sql);
-
-            $counts = array();
-            foreach ((array) $rows as $row) {
-                $counts[$row->status] = (int) $row->total;
-            }
-
-            return $counts;
         }
 
         /* ------------------------------------------------------------------

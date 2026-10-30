@@ -40,7 +40,7 @@ if (!class_exists('DRPM_OrderMeta')) {
 
             add_meta_box(
                 'drpm_ordermeta_box',
-                __('Delivery refusal risk', DRPM_TEXT_DOMAIN),
+                __('COD Guard', 'cod-guard'),
                 array($this, 'renderMetaBoxContent'),
                 $screen,
                 'side',
@@ -75,17 +75,17 @@ if (!class_exists('DRPM_OrderMeta')) {
             echo '<ul class="drpm-metabox__stats">';
             printf(
                 '<li>%s <strong>%d</strong></li>',
-                esc_html__('Refused deliveries:', DRPM_TEXT_DOMAIN),
+                esc_html__('Refused deliveries:', 'cod-guard'),
                 (int) $risk['refused']
             );
             printf(
                 '<li>%s <strong>%d</strong></li>',
-                esc_html__('Completed orders:', DRPM_TEXT_DOMAIN),
+                esc_html__('Completed orders:', 'cod-guard'),
                 (int) $risk['delivered']
             );
             printf(
                 '<li>%s <strong>%s%%</strong></li>',
-                esc_html__('Refusal rate:', DRPM_TEXT_DOMAIN),
+                esc_html__('Refusal rate:', 'cod-guard'),
                 esc_html(number_format_i18n($risk['rate'], 1))
             );
             echo '</ul>';
@@ -93,8 +93,8 @@ if (!class_exists('DRPM_OrderMeta')) {
             echo '<p class="description">' . esc_html(sprintf(
                 /* translators: 1: months, 2: list of fields */
                 $months > 0
-                    ? __('Other orders in the last %1$d months matching: %2$s.', DRPM_TEXT_DOMAIN)
-                    : __('Other orders (all time) matching: %2$s.', DRPM_TEXT_DOMAIN),
+                    ? __('Other orders in the last %1$d months matching: %2$s.', 'cod-guard')
+                    : __('Other orders (all time) matching: %2$s.', 'cod-guard'),
                 $months,
                 implode(', ', array_map(array('DRPM_Risk', 'fieldLabel'), $risk['checked_fields'])) ?: '—'
             )) . '</p>';
@@ -107,11 +107,11 @@ if (!class_exists('DRPM_OrderMeta')) {
                         $links[] = sprintf('<a href="%s">#%s</a>', esc_url($refusedOrder->get_edit_order_url()), esc_html($refusedOrder->get_order_number()));
                     }
                 }
-                echo '<p>' . esc_html__('Refused orders:', DRPM_TEXT_DOMAIN) . ' ' . implode(', ', $links) . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped above.
+                echo '<p>' . esc_html__('Refused orders:', 'cod-guard') . ' ' . implode(', ', $links) . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput -- escaped above.
             }
 
             if ($flagged) {
-                echo '<p class="drpm-metabox__flag">' . esc_html__('Restricted payment methods were hidden when this order was placed.', DRPM_TEXT_DOMAIN) . '</p>';
+                echo '<p class="drpm-metabox__flag">' . esc_html__('Payment methods were hidden when this order was placed.', 'cod-guard') . '</p>';
             }
 
             $customerId = (int) $order->get_customer_id();
@@ -119,7 +119,7 @@ if (!class_exists('DRPM_OrderMeta')) {
                 printf(
                     '<p><a href="%s">%s</a></p>',
                     esc_url(get_edit_user_link($customerId) . '#drpm-override'),
-                    esc_html__('Manage customer override', DRPM_TEXT_DOMAIN)
+                    esc_html__('Set an exception for this customer', 'cod-guard')
                 );
             }
 
@@ -135,11 +135,11 @@ if (!class_exists('DRPM_OrderMeta')) {
             foreach ($columns as $key => $label) {
                 $new[$key] = $label;
                 if ('order_status' === $key) {
-                    $new['drpm_risk'] = __('Delivery risk', DRPM_TEXT_DOMAIN);
+                    $new['drpm_risk'] = __('Delivery risk', 'cod-guard');
                 }
             }
             if (!isset($new['drpm_risk'])) {
-                $new['drpm_risk'] = __('Delivery risk', DRPM_TEXT_DOMAIN);
+                $new['drpm_risk'] = __('Delivery risk', 'cod-guard');
             }
 
             return $new;
@@ -177,7 +177,7 @@ if (!class_exists('DRPM_OrderMeta')) {
                 esc_attr($this->verdictLabel($risk)),
                 esc_html(sprintf(
                     /* translators: 1: refused orders, 2: refused + completed orders */
-                    __('%1$d / %2$d refused', DRPM_TEXT_DOMAIN),
+                    __('%1$d / %2$d refused', 'cod-guard'),
                     $risk['refused'],
                     $risk['refused'] + $risk['delivered']
                 ))
@@ -188,15 +188,19 @@ if (!class_exists('DRPM_OrderMeta')) {
         {
             switch ($risk['reason']) {
                 case 'blocked':
-                    return __('Always restricted (manual)', DRPM_TEXT_DOMAIN);
+                    return __('Always blocked (exception)', 'cod-guard');
                 case 'trusted':
-                    return __('Always allowed (manual)', DRPM_TEXT_DOMAIN);
+                    return __('Always trusted (exception)', 'cod-guard');
                 case 'threshold':
-                    return __('At risk – payment methods restricted', DRPM_TEXT_DOMAIN);
+                    return __('High risk · methods hidden', 'cod-guard');
                 default:
                     return $risk['refused'] > 0
-                        ? __('Has refused before – below threshold', DRPM_TEXT_DOMAIN)
-                        : __('No refusal history', DRPM_TEXT_DOMAIN);
+                        ? sprintf(
+                            /* translators: %d: number of refused orders */
+                            _n('Watch · %d refusal', 'Watch · %d refusals', $risk['refused'], 'cod-guard'),
+                            $risk['refused']
+                        )
+                        : __('No refusal history', 'cod-guard');
             }
         }
 
