@@ -4,7 +4,7 @@
  * Plugin URI: https://github.com/ventouris/cod_woo_plugin
  * Update URI: https://github.com/ventouris/cod_woo_plugin
  * Description: Stop losing money on refused cash-on-delivery parcels. Tracks refused deliveries, recognises repeat refusers and hides cash on delivery (or any payment method you choose) from them at checkout.
- * Version: 2.2.0
+ * Version: 2.3.0
  * Author: Tasos Ventouris
  * Author URI: https://github.com/ventouris
  * License: GPL-2.0-or-later
@@ -22,7 +22,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('DRPM_VERSION', '2.2.0');
+define('DRPM_VERSION', '2.3.0');
 define('DRPM_PLUGIN_NAME', 'COD Guard for WooCommerce');
 define('DRPM_PLUGIN_FILE', __FILE__);
 define('DRPM_PLUGIN_DIR', plugin_dir_path(__FILE__));
@@ -98,6 +98,7 @@ class DeliveryRefusalPaymentManager
             require_once DRPM_PLUGIN_DIR . 'admin/admin-order-meta.php';
             require_once DRPM_PLUGIN_DIR . 'admin/admin-users-meta.php';
             require_once DRPM_PLUGIN_DIR . 'admin/admin-dashboard.php';
+            require_once DRPM_PLUGIN_DIR . 'admin/admin-guide.php';
         }
 
         if (defined('WP_CLI') && WP_CLI) {

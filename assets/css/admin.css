@@ -426,3 +426,96 @@ line.drpm-axis {
 		gap: 4px;
 	}
 }
+
+/* How to use */
+.drpm-guide {
+	max-width: 900px;
+	padding: 24px 32px 32px;
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+.drpm-guide h2 {
+	margin: 40px 0 12px;
+	padding-top: 24px;
+	border-top: 1px solid #dcdcde;
+	font-size: 20px;
+}
+
+.drpm-guide h3 {
+	margin: 24px 0 8px;
+	font-size: 15px;
+}
+
+.drpm-guide p,
+.drpm-guide li {
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+.drpm-guide ul,
+.drpm-guide ol {
+	margin: 8px 0 16px 24px;
+}
+
+.drpm-guide ul {
+	list-style: disc;
+}
+
+.drpm-guide__contents {
+	padding: 12px 16px;
+	background: #f6f7f7;
+	border-radius: 4px;
+}
+
+.drpm-guide__contents ol {
+	margin-bottom: 0;
+}
+
+.drpm-guide__contents li {
+	margin-bottom: 2px;
+}
+
+.drpm-guide__image {
+	display: block;
+	max-width: 100%;
+	height: auto;
+	margin: 12px 0 20px;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+}
+
+.drpm-guide__table {
+	width: 100%;
+	margin: 12px 0 20px;
+	border-collapse: collapse;
+}
+
+.drpm-guide__table th,
+.drpm-guide__table td {
+	padding: 8px 10px;
+	border: 1px solid #dcdcde;
+	text-align: left;
+	vertical-align: top;
+}
+
+.drpm-guide__table th {
+	background: #f6f7f7;
+}
+
+.drpm-guide__row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	gap: 16px;
+}
+
+.drpm-guide__row figure {
+	flex: 1 1 280px;
+	margin: 0;
+}
+
+.drpm-guide__row > .drpm-guide__image {
+	flex: 0 1 260px;
+	min-width: 0;
+}

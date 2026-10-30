@@ -760,3 +760,9 @@ msgstr "Το COD Guard θα κρύψει τους επιλεγμένους τρ�
 #: includes/order-status.php:177
 msgid "They are still below the restriction rule."
 msgstr "Βρίσκεται ακόμη κάτω από το όριο του κανόνα περιορισμού."
+
+msgid "How to use"
+msgstr "Οδηγίες χρήσης"
+
+msgid "Guide language"
+msgstr "Γλώσσα οδηγού"

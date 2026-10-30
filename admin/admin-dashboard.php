@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
 if (!class_exists('DRPM_Dashboard')) {
     /**
      * WooCommerce → Delivery refusals: the plugin's own page, with a Dashboard tab
-     * (KPIs, trends and breakdowns of refused deliveries) and a Settings tab.
+     * (KPIs, trends and breakdowns of refused deliveries), a Settings tab and a How to use tab.
      */
     class DRPM_Dashboard
     {
@@ -29,7 +29,7 @@ if (!class_exists('DRPM_Dashboard')) {
         private static function currentTab()
         {
             // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-            return isset($_GET['tab']) && 'settings' === $_GET['tab'] ? 'settings' : 'dashboard';
+            return isset($_GET['tab']) && in_array($_GET['tab'], array('settings', 'guide'), true) ? $_GET['tab'] : 'dashboard';
         }
 
         public function onLoad()
@@ -83,6 +83,7 @@ if (!class_exists('DRPM_Dashboard')) {
             $tabs = array(
                 'dashboard' => __('Dashboard', 'cod-guard'),
                 'settings'  => __('Settings', 'cod-guard'),
+                'guide'     => __('How to use', 'cod-guard'),
             );
             ?>
             <div class="wrap drpm-dash">
@@ -95,6 +96,8 @@ if (!class_exists('DRPM_Dashboard')) {
                 <?php
                 if ('settings' === $tab) {
                     DRPM_Settings::instance()->render();
+                } elseif ('guide' === $tab) {
+                    DRPM_Guide::render();
                 } else {
                     $this->renderDashboard();
                 }

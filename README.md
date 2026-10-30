@@ -25,6 +25,10 @@ Supported: classic (shortcode) checkout, Checkout block (Store API), "Pay for or
 - **Breakdowns:** refusal rate by payment method, the regions with the most refusals, and the most refused products (needs WooCommerce Analytics).
 - **Repeat refusers:** customers who refused two or more orders, with their current status and a link to their latest order.
 
+## How to use
+
+*WooCommerce → COD Guard → How to use* is the shop manager's guide, in English and Greek with screenshots of each. It opens in the user's admin language, and the buttons at the top switch language. The guide lives in `admin/guide/` and its screenshots in `assets/images/guide/`.
+
 ## Settings
 
 *WooCommerce → COD Guard → Settings*
