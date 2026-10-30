@@ -75,6 +75,19 @@ wp cod-guard check <order_id> # show the verdict for an order's customer
 | `drpm_privacy_erase_data` (filter) | Whether privacy erasure requests remove COD Guard data |
 | `drpm_settings` (filter) | Change the settings fields |
 
+## Updates
+
+New releases appear on the *Plugins* screen with the usual **Update now** link. WordPress checks about every 12 hours; *Dashboard → Updates → Check again* checks straight away.
+
+To publish a release:
+
+1. Set the new version in both the `Version:` header and `DRPM_VERSION` in `cod-guard.php`, then push.
+2. Publish a GitHub release from that commit, tagged `v` + the version (e.g. `v2.2.0`). The release notes become the changelog shown in WordPress.
+
+A GitHub Action then attaches `cod-guard.zip` and `update.json` to the release, and fails without attaching anything if the tag and versions don't match. Pre-releases and drafts are not offered to sites.
+
+Sites on 2.1.0 or older don't have the updater, so they need to install 2.2.0 by hand once.
+
 ## Upgrading from 2.0 ("Delivery Refusal & Payment Manager")
 
 - The main plugin file was renamed to `cod-guard.php`, so WordPress deactivates the plugin once after the update. Reactivate it under *Plugins*.

@@ -1,0 +1,50 @@
+name: Build release
+
+# Attaches the plugin zip and the update manifest to each published release.
+# Installed sites read update.json from the latest release to find new versions.
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ github.event.release.tag_name }}
+      RELEASE_URL: ${{ github.event.release.html_url }}
+      RELEASE_NOTES: ${{ github.event.release.body }}
+      PUBLISHED_AT: ${{ github.event.release.published_at }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the tag matches the plugin version
+        run: |
+          header=$(sed -n 's/^ \* Version: *//p' cod-guard.php)
+          constant=$(sed -n "s/^define('DRPM_VERSION', '\(.*\)');/\1/p" cod-guard.php)
+          if [ "$TAG" != "v$header" ] || [ "$header" != "$constant" ]; then
+            echo "::error::Tag $TAG, plugin header $header and DRPM_VERSION $constant must match (tag is v + version)."
+            exit 1
+          fi
+          echo "VERSION=$header" >> "$GITHUB_ENV"
+
+      - name: Build the zip
+        run: git archive --format=zip --prefix=cod-guard/ -o cod-guard.zip HEAD
+
+      - name: Build the update manifest
+        run: |
+          jq -n \
+            --arg version "$VERSION" \
+            --arg package "https://github.com/$GITHUB_REPOSITORY/releases/download/$TAG/cod-guard.zip" \
+            --arg url "$RELEASE_URL" \
+            --arg requires "$(sed -n 's/^ \* Requires at least: *//p' cod-guard.php)" \
+            --arg requires_php "$(sed -n 's/^ \* Requires PHP: *//p' cod-guard.php)" \
+            --arg changelog "$RELEASE_NOTES" \
+            --arg last_updated "$PUBLISHED_AT" \
+            '$ARGS.named' > update.json
+
+      - name: Attach to the release
+        run: gh release upload "$TAG" cod-guard.zip update.json --clobber
