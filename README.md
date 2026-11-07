@@ -22,8 +22,21 @@ Supported: classic (shortcode) checkout, Checkout block (Store API), "Pay for or
   - order value refused
   - checkouts with methods hidden, and how many of them completed with another payment method
 - **Trends:** refused deliveries and refusal rate per day, week or month. Hover or focus a period for details; each chart has a data table.
-- **Breakdowns:** refusal rate by payment method, the regions with the most refusals, and the most refused products (needs WooCommerce Analytics).
-- **Repeat refusers:** customers who refused two or more orders, with their current status and a link to their latest order.
+- **Breakdowns:** refusal rate by payment method, the regions with the most refusals, and the top 10 most refused products (needs WooCommerce Analytics).
+- **Repeat refusers:** the top 10 customers who refused two or more orders, with their current status and a link to their latest order.
+
+## Refused products
+
+*WooCommerce → COD Guard → Refused products* lists every product with a refused order in the chosen date range, 20 per page, with refused and completed orders and the refusal rate. You can search by product name. The dashboard's "Most refused products" card links here.
+
+## Blocked customers
+
+*WooCommerce → COD Guard → Blocked customers* lists everyone payment methods are currently hidden from, 20 per page, searchable by name, email or phone. Filter by how they were blocked:
+
+- **Automatic:** their refusals in the look-back period cross the rule in Settings.
+- **Manual:** "Always block" on their user profile, or an entry in Settings → Exceptions → Always block (guests included).
+
+A customer's name opens their user profile, where the exception is set. Guests have no profile, so their name opens their orders instead.
 
 ## How to use
 
