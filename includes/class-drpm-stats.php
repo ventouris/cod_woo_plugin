@@ -221,12 +221,12 @@ if (!class_exists('DRPM_Stats')) {
          *
          * @return array|null Null when the lookup table isn't available.
          */
-        public static function topProducts($from, $to, $limit = 10)
+        public static function topProducts($from, $to, $limit = 10, $offset = 0)
         {
             global $wpdb;
 
-            $lookup = $wpdb->prefix . 'wc_order_product_lookup';
-            if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $lookup)) !== $lookup) {
+            $lookup = self::productLookupTable();
+            if (!$lookup) {
                 return null;
             }
 
@@ -239,8 +239,9 @@ if (!class_exists('DRPM_Stats')) {
                     COUNT(DISTINCT CASE WHEN i.status = %s THEN i.order_id END) AS refused,
                     COUNT(DISTINCT CASE WHEN i.status IN ({$delivered}) THEN i.order_id END) AS delivered
                 FROM " . DRPM_Index::tableName() . " i INNER JOIN {$lookup} l ON l.order_id = i.order_id
-                WHERE {$where} GROUP BY l.product_id HAVING refused > 0 ORDER BY refused DESC LIMIT %d",
-                array_merge(array(DRPM_Order_Status::STATUS), $args, array((int) $limit))
+                WHERE {$where} GROUP BY l.product_id HAVING refused > 0
+                ORDER BY refused DESC, delivered ASC, l.product_id DESC LIMIT %d OFFSET %d",
+                array_merge(array(DRPM_Order_Status::STATUS), $args, array((int) $limit, max(0, (int) $offset)))
             ));
 
             $result = array();
@@ -256,6 +257,22 @@ if (!class_exists('DRPM_Stats')) {
             }
 
             return $result;
+        }
+
+        /**
+         * WooCommerce Analytics' product lookup table, or '' when it doesn't exist.
+         */
+        private static function productLookupTable()
+        {
+            global $wpdb;
+
+            static $table = null;
+            if (null === $table) {
+                $name = $wpdb->prefix . 'wc_order_product_lookup';
+                $table = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $name)) === $name ? $name : '';
+            }
+
+            return $table;
         }
 
         /**
@@ -293,7 +310,7 @@ if (!class_exists('DRPM_Stats')) {
                     'email'        => $order->get_billing_email(),
                     'url'          => $order->get_edit_order_url(),
                     'order_number' => $order->get_order_number(),
-                    'last_refusal' => $row->last_refusal ? wp_date(get_option('date_format'), strtotime($row->last_refusal . ' UTC')) : '',
+                    'last_refusal' => $row->last_refusal ? wp_date('j M Y', strtotime($row->last_refusal . ' UTC')) : '',
                     'restricted'   => (bool) $risk['at_risk'],
                 ));
             }

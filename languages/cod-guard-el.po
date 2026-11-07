@@ -766,3 +766,131 @@ msgstr "Οδηγίες χρήσης"
 
 msgid "Guide language"
 msgstr "Γλώσσα οδηγού"
+
+#: admin/admin-dashboard.php
+msgid "Blocked customers"
+msgstr "Αποκλεισμένοι πελάτες"
+
+#: admin/admin-dashboard.php
+msgid "All blocked customers"
+msgstr "Όλοι οι αποκλεισμένοι πελάτες"
+
+#: admin/admin-dashboard.php
+msgid "All"
+msgstr "Όλοι"
+
+#: admin/admin-dashboard.php
+msgid "Automatic"
+msgstr "Αυτόματα"
+
+#: admin/admin-dashboard.php
+msgid "Manual"
+msgstr "Χειροκίνητα"
+
+#: admin/admin-dashboard.php
+msgid "Customer profile"
+msgstr "Προφίλ πελάτη"
+
+#: admin/admin-dashboard.php
+msgid "\"Always block\" list"
+msgstr "Λίστα «Πάντα αποκλεισμός»"
+
+#: admin/admin-dashboard.php
+msgid "How they were blocked"
+msgstr "Τρόπος αποκλεισμού"
+
+#: admin/admin-dashboard.php
+msgid "Search blocked customers"
+msgstr "Αναζήτηση αποκλεισμένων πελατών"
+
+#: admin/admin-dashboard.php
+msgid "Name, email or phone"
+msgstr "Όνομα, email ή τηλέφωνο"
+
+#: admin/admin-dashboard.php
+msgid "Search"
+msgstr "Αναζήτηση"
+
+#: admin/admin-dashboard.php
+msgid "No blocked customer matches your search."
+msgstr "Κανένας αποκλεισμένος πελάτης δεν ταιριάζει με την αναζήτηση."
+
+#: admin/admin-dashboard.php
+msgid "No customer is blocked manually. Use \"Always block\" on a customer profile or in Settings → Exceptions."
+msgstr "Κανένας πελάτης δεν έχει αποκλειστεί χειροκίνητα. Χρησιμοποιήστε το «Πάντα αποκλεισμός» στο προφίλ του πελάτη ή στις Ρυθμίσεις → Εξαιρέσεις."
+
+#: admin/admin-dashboard.php
+msgid "No customer currently crosses your refusal threshold."
+msgstr "Κανένας πελάτης δεν ξεπερνά αυτή τη στιγμή το όριο αρνήσεων."
+
+#: admin/admin-dashboard.php
+msgid "No customer is blocked right now."
+msgstr "Κανένας πελάτης δεν είναι αποκλεισμένος αυτή τη στιγμή."
+
+#: admin/admin-dashboard.php
+msgid "Blocked"
+msgstr "Αποκλεισμός"
+
+#: admin/admin-dashboard.php
+msgid "Actions"
+msgstr "Ενέργειες"
+
+#: admin/admin-dashboard.php
+msgid "Edit list"
+msgstr "Επεξεργασία λίστας"
+
+#. translators: %d: months
+#: admin/admin-dashboard.php
+#, php-format
+msgid "Automatic = their refusals in the last %d months cross the rule in Settings. Manual = \"Always block\" on their profile or in Settings → Exceptions. Counts use the same matching as checkout."
+msgstr "Αυτόματα = οι αρνήσεις τους τους τελευταίους %d μήνες ξεπερνούν τον κανόνα των Ρυθμίσεων. Χειροκίνητα = «Πάντα αποκλεισμός» στο προφίλ τους ή στις Ρυθμίσεις → Εξαιρέσεις. Οι μετρήσεις χρησιμοποιούν την ίδια αντιστοίχιση με το ταμείο."
+
+#: admin/admin-dashboard.php
+msgid "Automatic = their refusals cross the rule in Settings. Manual = \"Always block\" on their profile or in Settings → Exceptions. Counts use the same matching as checkout."
+msgstr "Αυτόματα = οι αρνήσεις τους ξεπερνούν τον κανόνα των Ρυθμίσεων. Χειροκίνητα = «Πάντα αποκλεισμός» στο προφίλ τους ή στις Ρυθμίσεις → Εξαιρέσεις. Οι μετρήσεις χρησιμοποιούν την ίδια αντιστοίχιση με το ταμείο."
+
+#: admin/admin-dashboard.php
+msgid "Pages"
+msgstr "Σελίδες"
+
+#. translators: 1: first row, 2: last row, 3: total rows
+#: admin/admin-dashboard.php
+#, php-format
+msgid "%1$s–%2$s of %3$s"
+msgstr "%1$s–%2$s από %3$s"
+
+#: admin/admin-dashboard.php
+msgid "Previous page"
+msgstr "Προηγούμενη σελίδα"
+
+#: admin/admin-dashboard.php
+msgid "Next page"
+msgstr "Επόμενη σελίδα"
+
+#: admin/admin-dashboard.php
+msgid "No account: the link opens their orders. Exceptions for guests are set in Settings → Exceptions."
+msgstr "Χωρίς λογαριασμό: ο σύνδεσμος ανοίγει τις παραγγελίες του. Οι εξαιρέσεις για επισκέπτες ορίζονται στις Ρυθμίσεις → Εξαιρέσεις."
+
+#: admin/admin-dashboard.php
+msgid "Refused products"
+msgstr "Προϊόντα με αρνήσεις"
+
+#: admin/admin-dashboard.php
+msgid "All refused products"
+msgstr "Όλα τα προϊόντα με αρνήσεις"
+
+#: admin/admin-dashboard.php
+msgid "Search refused products"
+msgstr "Αναζήτηση προϊόντων με αρνήσεις"
+
+#: admin/admin-dashboard.php
+msgid "Product name"
+msgstr "Όνομα προϊόντος"
+
+#: admin/admin-dashboard.php
+msgid "No refused product matches your search."
+msgstr "Κανένα προϊόν με αρνήσεις δεν ταιριάζει με την αναζήτηση."
+
+#: admin/admin-dashboard.php
+msgid "Refused orders = orders containing the product that were refused, by order date. Refusal rate = refused ÷ (refused + completed) of those orders."
+msgstr "Παραγγελίες με άρνηση = παραγγελίες που περιείχαν το προϊόν και δεν παραλήφθηκαν, βάσει ημερομηνίας παραγγελίας. Ποσοστό αρνήσεων = αρνήσεις ÷ (αρνήσεις + ολοκληρωμένες) για αυτές τις παραγγελίες."

@@ -764,3 +764,131 @@ msgstr ""
 
 msgid "Guide language"
 msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "Blocked customers"
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "All blocked customers"
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "All"
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "Automatic"
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "Manual"
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "Customer profile"
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "\"Always block\" list"
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "How they were blocked"
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "Search blocked customers"
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "Name, email or phone"
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "Search"
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "No blocked customer matches your search."
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "No customer is blocked manually. Use \"Always block\" on a customer profile or in Settings → Exceptions."
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "No customer currently crosses your refusal threshold."
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "No customer is blocked right now."
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "Blocked"
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "Actions"
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "Edit list"
+msgstr ""
+
+#. translators: %d: months
+#: admin/admin-dashboard.php
+#, php-format
+msgid "Automatic = their refusals in the last %d months cross the rule in Settings. Manual = \"Always block\" on their profile or in Settings → Exceptions. Counts use the same matching as checkout."
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "Automatic = their refusals cross the rule in Settings. Manual = \"Always block\" on their profile or in Settings → Exceptions. Counts use the same matching as checkout."
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "Pages"
+msgstr ""
+
+#. translators: 1: first row, 2: last row, 3: total rows
+#: admin/admin-dashboard.php
+#, php-format
+msgid "%1$s–%2$s of %3$s"
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "Previous page"
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "Next page"
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "No account: the link opens their orders. Exceptions for guests are set in Settings → Exceptions."
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "Refused products"
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "All refused products"
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "Search refused products"
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "Product name"
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "No refused product matches your search."
+msgstr ""
+
+#: admin/admin-dashboard.php
+msgid "Refused orders = orders containing the product that were refused, by order date. Refusal rate = refused ÷ (refused + completed) of those orders."
+msgstr ""

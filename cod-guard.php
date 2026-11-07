@@ -92,6 +92,7 @@ class DeliveryRefusalPaymentManager
         require_once DRPM_PLUGIN_DIR . 'includes/hide-payment-gateway.php';
         require_once DRPM_PLUGIN_DIR . 'includes/class-drpm-privacy.php';
         require_once DRPM_PLUGIN_DIR . 'includes/class-drpm-stats.php';
+        require_once DRPM_PLUGIN_DIR . 'includes/class-drpm-blocked.php';
 
         if (is_admin()) {
             require_once DRPM_PLUGIN_DIR . 'admin/admin-settings.php';
